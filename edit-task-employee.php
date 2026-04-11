@@ -61,6 +61,13 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     <label for="task_file" class="edit-btn" style="cursor:pointer; display:inline-block; margin-top:5px;">
         Choose File
     </label>
+
+<button type="button" id="remove-file" class="edit-btn" 
+        style="margin-left:10px; background:#dc3545;">
+    Remove File
+</button>
+
+
     <span id="file-name" style="margin-left:10px; font-style:italic;">No file chosen</span>
 </div><br>
                     <div class="input-holder">
@@ -86,6 +93,15 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 document.getElementById('task_file').addEventListener('change', function() {
     var fileName = this.files[0] ? this.files[0].name : "No file chosen";
     document.getElementById('file-name').textContent = fileName;
+});
+</script>
+
+<script>
+document.getElementById('remove-file').addEventListener('click', function() {
+    var fileInput = document.getElementById('task_file');
+    
+    fileInput.value = "";
+    document.getElementById('file-name').textContent = "No file chosen";
 });
 </script>
 </body>
