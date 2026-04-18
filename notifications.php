@@ -55,10 +55,19 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
     </div>
 
     <script type="text/javascript">
+    // PHP checks the session and prints the correct Javascript for the user's role
+    <?php if ($_SESSION['role'] === 'admin') { ?>
+        // Notifications is the 5th item on the Admin sidebar
+        var active = document.querySelector("#navlist li:nth-child(5)");
+    <?php } else { ?>
+        // Notifications is the 4th item on the Employee sidebar
         var active = document.querySelector("#navlist li:nth-child(4)");
-        if(active) active.classList.add("active");
-    </script>
-    
+    <?php } ?>
+
+    // Add the teal highlight
+    if (active) {
+        active.classList.add("active");
+    }
 </script>
 
 </body>
