@@ -4,10 +4,8 @@ session_start();
 if (isset($_SESSION['role']) && isset($_SESSION['id'])) {       
     include "DB_connection.php";
     include "app/Model/Notification.php";
-    // include "app/Model/User.php";
 
     $notifications = get_all_my_notifications($conn, $_SESSION['id']); 
-        
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,6 +13,26 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
     <title>Notifications</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #fff;
+        }
+        .table th, .table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <input type="checkbox" id="checkbox">
@@ -24,59 +42,70 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
         <section class="section-1">
             <h4 class="title">All Notifications</h4>
 
-            <!-- Success message -->
             <?php if (isset($_GET['success'])) { ?> 
                 <div class="success" role="alert">
                     <?= stripslashes($_GET['success']); ?>
                 </div>
             <?php } ?>
-            <?php if ($notifications != 0) { ?>
-                <table class="main-table">
-                    <tr>
-                        <th>#</th>
-                        <th>Message</th>
-                        <th>Type</th>
-                        <th>Date</th>
-                    </tr>
-                    <?php $i = 0; foreach ($notifications as $notification) { ?>
+
+            <?php if ($notifications != 0 && !empty($notifications)) { ?>
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td><?=++$i ?></td>
-                            <td><?= $notification['message'] ?></td>
-                            <td><?= $notification['type'] ?></td>
-                            <td><?= $notification['date'] ?></td>
+                            <th style="width: 50px;">#</th>
+                            <th>Message</th>
+                            <?php if ($_SESSION['role'] === 'employee') { ?>
+                                <th>Type</th>
+                            <?php } ?>
+                            <th style="width: 150px;">Date</th>
                         </tr>
-                    <?php } ?>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $i = 1; 
+                        foreach ($notifications as $notif) { 
+                        ?>
+                        <tr>
+                            <td><?= $i ?></td>
+                            <td><?= htmlspecialchars($notif['message']) ?></td>
+                            <?php if ($_SESSION['role'] === 'employee') { ?>
+                                <td><?= htmlspecialchars($notif['type']) ?></td>
+                            <?php } ?>
+                            <td><?= $notif['date'] ?></td>
+                        </tr>
+                        <?php 
+                            $i++;
+                        } 
+                        ?>
+                    </tbody>
                 </table>
             <?php } else { ?>
-                <h3>Empty Notifications</h3>
+                <div class="input-holder">
+                    <h3>Empty Notifications</h3>
+                </div>
             <?php } ?>
 
         </section>
     </div>
 
     <script type="text/javascript">
-    // PHP checks the session and prints the correct Javascript for the user's role
-    <?php if ($_SESSION['role'] === 'admin') { ?>
-        // Notifications is the 5th item on the Admin sidebar
-        var active = document.querySelector("#navlist li:nth-child(5)");
-    <?php } else { ?>
-        // Notifications is the 4th item on the Employee sidebar
-        var active = document.querySelector("#navlist li:nth-child(4)");
-    <?php } ?>
+        <?php if ($_SESSION['role'] === 'admin') { ?>
+            var active = document.querySelector("#navlist li:nth-child(5)");
+        <?php } else { ?>
+            var active = document.querySelector("#navlist li:nth-child(4)");
+        <?php } ?>
 
-    // Add the teal highlight
-    if (active) {
-        active.classList.add("active");
-    }
-</script>
-
+        if (active) {
+            active.classList.add("active");
+        }
+    </script>
 </body>
 </html>
 
 <?php  
 } else { 
     $em = "First login";
-    header("Location: login.php?error=$em");
+    header("Location: login.php?error=" . urlencode($em));
     exit(); 
 }
 ?>
