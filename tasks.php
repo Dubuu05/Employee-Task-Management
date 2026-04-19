@@ -22,9 +22,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         $tasks = get_all_tasks_no_deadline($conn); 
         $num_task = count_tasks_no_deadline($conn);
     
-    
-    
-        }else {
+    }else {
         $tasks = get_all_tasks($conn); 
     $num_task = count_tasks($conn);
     }
@@ -53,14 +51,12 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
             <a href="tasks.php">All Tasks</a>
         </h4>
 <h4 class="title-2"><?= $text ?> (<?= $num_task ?>) </h4>
-            <!-- Success message -->
             <?php if (isset($_GET['success'])) { ?> 
                 <div class="success" role="alert">
                     <?= stripslashes($_GET['success']); ?>
                 </div>
             <?php } ?>
 
-            <!-- Tasks table -->
             <?php if ($tasks != 0) { ?>
                 <table class="main-table">
                     <tr>
@@ -98,12 +94,12 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 </td>
 <td><?= htmlspecialchars($task['status']) ?></td>
 
-                            <!-- ✅ FIXED FILE COLUMN -->
                             <td>
                                 <?php if (!empty($task['file_path'])) { ?>
                                     <a href="download.php?file=<?= urlencode(basename($task['file_path'])) ?>" class="edit-btn">
                                         Download
                                     </a>
+                                    <a href="app/return-task.php?id=<?= $task['id'] ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this file and return the task to the employee?');" style="margin-top: 5px; display: inline-block;">Return</a>
                                 <?php } else { ?>
                                     <span style="font-style:italic; color:#888;">No file</span>
                                 <?php } ?>
