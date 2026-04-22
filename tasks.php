@@ -99,7 +99,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                                     <a href="download.php?file=<?= urlencode(basename($task['file_path'])) ?>" class="edit-btn">
                                         Download
                                     </a>
-                                    <a href="app/return-task.php?id=<?= $task['id'] ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this file and return the task to the employee?');" style="margin-top: 5px; display: inline-block;">Return</a>
+                                    <a href="return-task-form.php?id=<?= $task['id'] ?>" class="delete-btn" style="margin-top: 5px; display: inline-block;">Return</a>
                                 <?php } else { ?>
                                     <span style="font-style:italic; color:#888;">No file</span>
                                 <?php } ?>
@@ -121,6 +121,17 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     <script>
         var active = document.querySelector("#navlist li:nth-child(4)");
         if(active) active.classList.add("active");
+
+        // NEW JAVASCRIPT POPUP FUNCTION
+        function askForReason(taskId) {
+            var comment = prompt("Why are you returning this task? (The employee will see this comment):");
+            
+            // If they typed something or left it blank and hit OK
+            if (comment !== null) {
+                // Redirect to the backend script and safely attach the comment to the URL
+                window.location.href = "app/return-task.php?id=" + taskId + "&comment=" + encodeURIComponent(comment);
+            }
+        }
     </script>
 </body>
 </html>
