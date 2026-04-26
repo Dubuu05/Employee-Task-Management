@@ -3,7 +3,15 @@ session_start();
 
 if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
-    if (isset($_POST['title']) && isset($_POST['description']) && isset($_POST['assigned_to'])&& $_SESSION['role']=="admin" &&isset($_POST['due_date'])) {
+    if (
+        isset($_POST['title']) &&
+        isset($_POST['description']) &&
+        isset($_POST['assigned_to']) &&
+        isset($_POST['due_date']) &&
+        isset($_POST['priority']) && 
+        $_SESSION['role'] == "admin"
+    ) {
+
         include "../DB_connection.php";
 
         function validate_input($data) {
@@ -17,46 +25,51 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
         $description = validate_input($_POST['description']);
         $assigned_to = validate_input($_POST['assigned_to']);
         $due_date = validate_input($_POST['due_date']);
+        $priority = validate_input($_POST['priority']); // ✅ ADDED
 
+        // VALIDATION
         if (empty($title)) {
             $em = "Title is required!";
             header("Location: ../create_task.php?error=$em");
             exit();
+
         } else if (empty($description)) {
             $em = "Description is required!";
             header("Location: ../create_task.php?error=$em");
             exit();
 
-            } else if ($assigned_to == 0) {
+        } else if ($assigned_to == 0) {
             $em = "Select User required!";
             header("Location: ../create_task.php?error=$em");
             exit();
 
+        } else {
 
-            } else {
+            include "Model/Task.php";
+            include "Model/Notification.php";
 
-        include "Model/Task.php";
-        include "Model/Notification.php";
+            // ✅ INSERT TASK (NOW WITH PRIORITY)
+            $data = array($title, $description, $assigned_to, $due_date, $priority);
+            insert_task($conn, $data);
 
-         
+            // NOTIFICATION
+            $notif_data = array(
+                "'$title' has been assigned to you. Please review and start working on it",
+                $assigned_to,
+                'New Task Assigned'
+            );
 
-        $data = array($title, $description, $assigned_to, $due_date);
-insert_task($conn, $data);
+            insert_notification($conn, $notif_data);
 
-$notif_data = array("'$title' has been assigned to you. Please review and start working on it", $assigned_to, 'New Task Assigned');
-insert_notification($conn, $notif_data);
-
-
-           $em = "Task added successfully!";
-          header("Location: ../create_task.php?success=$em");
-         exit();
+            $em = "Task added successfully!";
+            header("Location: ../create_task.php?success=$em");
+            exit();
         }
 
-    
     } else { 
-    $em = "Unknown error occurred!";
-    header("Location: ../create_task.php?error=$em");
-    exit(); 
+        $em = "Unknown error occurred!";
+        header("Location: ../create_task.php?error=$em");
+        exit(); 
     }
 
 } else { 
@@ -64,3 +77,4 @@ insert_notification($conn, $notif_data);
     header("Location: ../create_task.php?error=$em");
     exit(); 
 }
+?>

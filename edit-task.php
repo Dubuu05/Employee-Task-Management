@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'admin') {
     include "DB_connection.php";
     include "app/Model/Task.php";
@@ -11,6 +12,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         header("Location: tasks.php");
         exit();
     }
+
     $id = $_GET['id'];
     $task = get_task_by_id($conn, $id);
 
@@ -18,7 +20,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         header("Location: tasks.php");
         exit();
     }
-    ?>
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,63 +30,93 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 </head>
 <body>
     <input type="checkbox" id="checkbox">
+
     <?php include "inc/header.php" ?>
+
     <div class="body">
         <?php include "inc/nav.php" ?>
+
         <section class="section-1">
-            <h4 class= "title">Edit Task <a href="tasks.php">Tasks</a></h4>
-            <form class= "form-1"
-            method="POST"
-            action="app/update-task.php">
-            <?php if (isset($_GET['error'])) { ?> 
-        <div class="danger" role="alert">
-            <?php echo stripslashes($_GET['error']); ?>
-        </div>
-        <?php } 
-            ?>
-        <?php if (isset($_GET['success'])) { ?> 
-        <div class="success" role="alert">
-            <?php echo stripslashes($_GET['success']); ?>
-        </div>
-        <?php }  ?>
-                                <div class="input-holder">
+            <h4 class="title">
+                Edit Task 
+                <a href="tasks.php">Tasks</a>
+            </h4>
+
+            <form class="form-1" method="POST" action="app/update-task.php">
+
+                <?php if (isset($_GET['error'])) { ?> 
+                    <div class="danger">
+                        <?= stripslashes($_GET['error']); ?>
+                    </div>
+                <?php } ?>
+
+                <?php if (isset($_GET['success'])) { ?> 
+                    <div class="success">
+                        <?= stripslashes($_GET['success']); ?>
+                    </div>
+                <?php } ?>
+
+                <!-- TITLE -->
+                <div class="input-holder">
                     <label>Title</label>
-                    <input type="text" name="title" class="input-1" placeholder="Title" value="<?=$task['title']?>"><br>
+                    <input type="text" name="title" class="input-1" 
+                           value="<?= htmlspecialchars($task['title']) ?>">
                 </div>
 
+                <!-- DESCRIPTION -->
                 <div class="input-holder">
                     <label>Description</label>
-                    <textarea name="description" rows="5" class="input-1" placeholder="Description"><?=$task['description']?></textarea><br>
-                </div>
-                <div class="input-holder">
-                    <label>Snooze</label>
-                    <input type="date" name="due_date" class="input-1" placeholder="due_date" value="<?=$task['due_date']?>"><br>
+                    <textarea name="description" rows="5" class="input-1"><?= htmlspecialchars($task['description']) ?></textarea>
                 </div>
 
-<div class="input-holder">
+                <!-- DUE DATE -->
+                <div class="input-holder">
+                    <label>Due Date</label>
+                    <input type="date" name="due_date" class="input-1" 
+                           value="<?= htmlspecialchars($task['due_date']) ?>">
+                </div>
+
+                <!-- PRIORITY (NEW) -->
+                <div class="input-holder">
+                    <label>Priority</label>
+                    <select name="priority" class="input-1">
+                        <option value="Low" <?= ($task['priority'] == 'Low') ? 'selected' : '' ?>>Low</option>
+                        <option value="Medium" <?= ($task['priority'] == 'Medium') ? 'selected' : '' ?>>Medium</option>
+                        <option value="High" <?= ($task['priority'] == 'High') ? 'selected' : '' ?>>High</option>
+                    </select>
+                </div>
+
+                <!-- ASSIGNED TO -->
+                <div class="input-holder">
                     <label>Assigned To</label>
                     <select name="assigned_to" class="input-1">
-                        <option value ="0">Select Employee</option>
-                                                <?php if ($users != 0) { 
-    foreach ($users as $user) { 
-        $selected = ($task['assigned_to'] == $user['id']) ? 'selected' : '';
-        ?>
-        <option value="<?= $user['id'] ?>" <?= $selected ?>><?= $user['full_name'] ?></option>
-<?php 
-    } 
-} ?>
-                    </select><br>
+                        <option value="0">Select Employee</option>
+
+                        <?php if ($users != 0) { 
+                            foreach ($users as $user) { 
+                                $selected = ($task['assigned_to'] == $user['id']) ? 'selected' : '';
+                        ?>
+                            <option value="<?= $user['id'] ?>" <?= $selected ?>>
+                                <?= htmlspecialchars($user['full_name']) ?>
+                            </option>
+                        <?php 
+                            } 
+                        } ?>
+                    </select>
                 </div>  
-                <input type="text" name="id" value="<?=$task['id']?>" hidden>
+
+                <!-- HIDDEN ID -->
+                <input type="hidden" name="id" value="<?= $task['id'] ?>">
 
                 <button class="edit-btn">Update</button>
-       </form>
-            
+            </form>
+
         </section>
     </div>
+
     <script type="text/javascript">
         var active = document.querySelector("#navlist li:nth-child(4)");
-        active.classList.add("active");
+        if(active) active.classList.add("active");
     </script>
 </body>
 </html>

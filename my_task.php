@@ -7,7 +7,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
     include "app/Model/User.php";
 
     $tasks = get_all_tasks_by_id($conn, $_SESSION['id']); 
-        
 ?>
 <!DOCTYPE html>
 <html>
@@ -21,37 +20,54 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
     <?php include "inc/header.php"; ?>
     <div class="body">
         <?php include "inc/nav.php"; ?>
+
         <section class="section-1">
             <h4 class="title">My Tasks</h4>
 
-            <!-- Success message -->
             <?php if (isset($_GET['success'])) { ?> 
-                <div class="success" role="alert">
+                <div class="success">
                     <?= stripslashes($_GET['success']); ?>
                 </div>
             <?php } ?>
 
-            <!-- Users table -->
             <?php if ($tasks != 0) { ?>
                 <table class="main-table">
                     <tr>
                         <th>#</th>
                         <th>Title</th>
                         <th>Description</th>
+                        <th>Priority</th> <!-- ✅ ADDED -->
                         <th>Status</th>
                         <th>Due Date</th>
                         <th>Action</th>
                     </tr>
+
                     <?php $i = 0; foreach ($tasks as $task) { ?>
                         <tr>
                             <td><?= ++$i ?></td>
-                            <td><?= $task['title'] ?></td>
-                            <td><?= $task['description'] ?></td>
-                            <td><?= $task['status'] ?></td>
-                            <td><?= $task['due_date'] ?></td>
+                            <td><?= htmlspecialchars($task['title']) ?></td>
+                            <td><?= htmlspecialchars($task['description']) ?></td>
+
+                            <!-- PRIORITY -->
                             <td>
-                                <a href="edit-task-employee.php?id=<?= $task['id'] ?>" class="edit-btn">Edit</a>
-    
+                                <?php 
+                                    if ($task['priority'] == 'High') {
+                                        echo "🔴 High";
+                                    } elseif ($task['priority'] == 'Medium') {
+                                        echo "🟡 Medium";
+                                    } else {
+                                        echo "🟢 Low";
+                                    }
+                                ?>
+                            </td>
+
+                            <td><?= htmlspecialchars($task['status']) ?></td>
+                            <td><?= htmlspecialchars($task['due_date']) ?></td>
+
+                            <td>
+                                <a href="edit-task-employee.php?id=<?= $task['id'] ?>" class="edit-btn">
+                                    Edit
+                                </a>
                             </td>
                         </tr>
                     <?php } ?>

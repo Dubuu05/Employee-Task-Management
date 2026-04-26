@@ -7,28 +7,28 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     include "app/Model/User.php";
 
     $text = "All Tasks";
+
     if(isset($_GET['due_date']) && $_GET['due_date'] == "Due Today") {
         $text = "Due Today";
-    $tasks = get_all_tasks_due_today($conn); 
-    $num_task = count_tasks_due_today($conn);
+        $tasks = get_all_tasks_due_today($conn); 
+        $num_task = count_tasks_due_today($conn);
 
     } elseif (isset($_GET['due_date']) && $_GET['due_date'] == "Overdue") {
         $text = "Overdue";
-    $tasks = get_all_tasks_overdue($conn); 
-    $num_task = count_tasks_overdue($conn);
+        $tasks = get_all_tasks_overdue($conn); 
+        $num_task = count_tasks_overdue($conn);
 
     } else if(isset($_GET['due_date']) && $_GET['due_date'] == "No Deadline") {
         $text = "No Deadline";
         $tasks = get_all_tasks_no_deadline($conn); 
         $num_task = count_tasks_no_deadline($conn);
-    
-    }else {
+
+    } else {
         $tasks = get_all_tasks($conn); 
-    $num_task = count_tasks($conn);
+        $num_task = count_tasks($conn);
     }
 
     $users = get_all_users($conn); 
-    
 ?>
 <!DOCTYPE html>
 <html>
@@ -42,17 +42,21 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     <?php include "inc/header.php"; ?>
     <div class="body">
         <?php include "inc/nav.php"; ?>
+
         <section class="section-1">
+
             <h4 class="title-2">
-            <a href="create_task.php" class="btn" >Create Task</a>
-            <a href="tasks.php?due_date=Due Today">Due Today</a>
-            <a href="tasks.php?due_date=Overdue">Overdue</a>
-            <a href="tasks.php?due_date=No Deadline">No Deadline</a>
-            <a href="tasks.php">All Tasks</a>
-        </h4>
-<h4 class="title-2"><?= $text ?> (<?= $num_task ?>) </h4>
+                <a href="create_task.php" class="btn">Create Task</a>
+                <a href="tasks.php?due_date=Due Today">Due Today</a>
+                <a href="tasks.php?due_date=Overdue">Overdue</a>
+                <a href="tasks.php?due_date=No Deadline">No Deadline</a>
+                <a href="tasks.php">All Tasks</a>
+            </h4>
+
+            <h4 class="title-2"><?= $text ?> (<?= $num_task ?>)</h4>
+
             <?php if (isset($_GET['success'])) { ?> 
-                <div class="success" role="alert">
+                <div class="success">
                     <?= stripslashes($_GET['success']); ?>
                 </div>
             <?php } ?>
@@ -63,17 +67,33 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                         <th>#</th>
                         <th>Title</th>
                         <th>Description</th>
+                        <th>Priority</th> <!-- ✅ ADDED -->
                         <th>Assigned To</th>
                         <th>Due Date</th>
                         <th>Status</th>
                         <th>File</th>
                         <th>Action</th>
                     </tr>
+
                     <?php $i = 0; foreach ($tasks as $task) { ?>
                         <tr>
                             <td><?= ++$i ?></td>
                             <td><?= htmlspecialchars($task['title']) ?></td>
                             <td><?= htmlspecialchars($task['description']) ?></td>
+
+                            <!-- PRIORITY -->
+                            <td>
+                                <?php 
+                                    if ($task['priority'] == 'High') {
+                                        echo "🔴 High";
+                                    } elseif ($task['priority'] == 'Medium') {
+                                        echo "🟡 Medium";
+                                    } else {
+                                        echo "🟢 Low";
+                                    }
+                                ?>
+                            </td>
+
                             <td>
                                 <?php 
                                 foreach($users as $user) {
@@ -83,16 +103,18 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                                 }
                                 ?>
                             </td>
+
                             <td>
-    <?php 
-        if (empty($task['due_date'])) {
-            echo "No Deadline";
-        } else {
-            echo htmlspecialchars($task['due_date']);
-        }
-    ?>
-</td>
-<td><?= htmlspecialchars($task['status']) ?></td>
+                                <?php 
+                                    if (empty($task['due_date'])) {
+                                        echo "No Deadline";
+                                    } else {
+                                        echo htmlspecialchars($task['due_date']);
+                                    }
+                                ?>
+                            </td>
+
+                            <td><?= htmlspecialchars($task['status']) ?></td>
 
                             <td>
                                 <?php if (!empty($task['file_path'])) { ?>
@@ -115,6 +137,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
             <?php } else { ?>
                 <h3>No tasks found</h3>
             <?php } ?>
+
         </section>
     </div>
 
@@ -122,13 +145,10 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         var active = document.querySelector("#navlist li:nth-child(4)");
         if(active) active.classList.add("active");
 
-        // NEW JAVASCRIPT POPUP FUNCTION
         function askForReason(taskId) {
             var comment = prompt("Why are you returning this task? (The employee will see this comment):");
-            
-            // If they typed something or left it blank and hit OK
+
             if (comment !== null) {
-                // Redirect to the backend script and safely attach the comment to the URL
                 window.location.href = "app/return-task.php?id=" + taskId + "&comment=" + encodeURIComponent(comment);
             }
         }

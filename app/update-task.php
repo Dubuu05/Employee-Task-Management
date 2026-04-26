@@ -3,7 +3,16 @@ session_start();
 
 if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
-    if (isset($_POST['id']) && isset($_POST['title']) && isset($_POST['description']) && isset($_POST['assigned_to'])&& $_SESSION['role']=="admin" && isset($_POST['due_date'])) {
+    if (
+        isset($_POST['id']) &&
+        isset($_POST['title']) &&
+        isset($_POST['description']) &&
+        isset($_POST['assigned_to']) &&
+        isset($_POST['due_date']) &&
+        isset($_POST['priority']) && // ✅ ADDED SAFETY CHECK
+        $_SESSION['role'] == "admin"
+    ) {
+
         include "../DB_connection.php";
 
         function validate_input($data) {
@@ -13,46 +22,65 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
             return $data;
         }
 
+        // INPUTS
+        $id = validate_input($_POST['id']);
         $title = validate_input($_POST['title']);
         $description = validate_input($_POST['description']);
         $assigned_to = validate_input($_POST['assigned_to']);
-        $id = validate_input($_POST['id']);
         $due_date = validate_input($_POST['due_date']);
+        $priority = validate_input($_POST['priority']);
 
-
+        // VALIDATION
         if (empty($title)) {
             $em = "Title is required!";
             header("Location: ../edit-task.php?error=$em&id=$id");
             exit();
+
         } else if (empty($description)) {
             $em = "Description is required!";
             header("Location: ../edit-task.php?error=$em&id=$id");
             exit();
 
-            } else if ($assigned_to == 0) {
+        } else if ($assigned_to == 0) {
             $em = "Select User required!";
             header("Location: ../edit-task.php?error=$em&id=$id");
             exit();
 
+        } else {
 
-            } else {
+            include "Model/Task.php";
+            include "Model/Notification.php"; // ✅ ADDED
 
-        include "Model/Task.php";
-         
+            // UPDATE TASK
+            $data = array(
+                $title,
+                $description,
+                $assigned_to,
+                $due_date,
+                $priority,
+                $id
+            );
 
-        $data = array($title, $description, $assigned_to, $due_date, $id);
-           update_task($conn, $data);
+            update_task($conn, $data);
 
-           $em = "Task updated successfully!";
-          header("Location: ../edit-task.php?success=$em&id=$id");
-         exit();
+            // 🔥 NOTIFICATION ADDED
+            $notif_data = array(
+                "Task '$title' was updated. Priority was updated to: $priority",
+                $assigned_to,
+                "Task Updated"
+            );
+
+            insert_notification($conn, $notif_data);
+
+            $em = "Task updated successfully!";
+            header("Location: ../edit-task.php?success=$em&id=$id");
+            exit();
         }
 
-    
     } else { 
-    $em = "Unknown error occurred!";
-    header("Location: ../edit-task.php?error=$em");
-    exit(); 
+        $em = "Unknown error occurred!";
+        header("Location: ../edit-task.php?error=$em");
+        exit(); 
     }
 
 } else { 
@@ -60,3 +88,4 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
     header("Location: ../login.php?error=$em");
     exit(); 
 }
+?>

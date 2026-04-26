@@ -1,8 +1,8 @@
 <?php
 
-
 function insert_task($conn, $data) {
-    $sql = "INSERT INTO tasks (title, description, assigned_to, due_date) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO tasks (title, description, assigned_to, due_date, priority) 
+            VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->execute($data);
 }
@@ -98,7 +98,9 @@ function count_tasks($conn) {
 
 
 function update_task($conn, $data) {
-    $sql = "UPDATE tasks SET title = ?, description = ?, assigned_to = ?, due_date = ? WHERE id = ?";
+    $sql = "UPDATE tasks 
+            SET title = ?, description = ?, assigned_to = ?, due_date = ?, priority = ? 
+            WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute($data);
 }
@@ -109,6 +111,8 @@ function update_task_status($conn, $data) {
     $stmt = $conn->prepare($sql);
     $stmt->execute($data);
 }
+
+
 function update_task_status_and_file($conn, $id, $status, $file_path) {
     $sql = "UPDATE tasks SET status = ?, file_path = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
@@ -121,12 +125,16 @@ function delete_task($conn, $data) {
     $stmt = $conn->prepare($sql);
     $stmt->execute($data);
 }
+
+
 function count_my_tasks($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
 }
+
+
 function count_my_tasks_overdue($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks 
             WHERE assigned_to = ?
@@ -139,6 +147,7 @@ function count_my_tasks_overdue($conn, $id) {
     return $stmt->fetchColumn();
 }
 
+
 function count_my_tasks_no_deadline($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks 
             WHERE assigned_to = ? 
@@ -147,39 +156,48 @@ function count_my_tasks_no_deadline($conn, $id) {
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
 }
+
+
 function count_pending_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'pending'";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchColumn();
 }
+
 function count_in_progress_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'in_progress'";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchColumn();
 }
+
 function count_completed_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'completed'";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchColumn();
 }
+
+
 function count_my_pending_tasks($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ? AND status = 'pending'";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
 }
+
 function count_my_in_progress_tasks($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ? AND status = 'in_progress'";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
 }
+
 function count_my_completed_tasks($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ? AND status = 'completed'";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
 }
+?>
