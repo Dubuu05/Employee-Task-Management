@@ -80,9 +80,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                 <div class="input-holder">
                     <label>Priority</label>
                     <select name="priority" class="input-1">
-                        <option value="Low" <?= ($task['priority'] == 'Low') ? 'selected' : '' ?>>Low</option>
-                        <option value="Medium" <?= ($task['priority'] == 'Medium') ? 'selected' : '' ?>>Medium</option>
                         <option value="High" <?= ($task['priority'] == 'High') ? 'selected' : '' ?>>High</option>
+                        <option value="Medium" <?= ($task['priority'] == 'Medium') ? 'selected' : '' ?>>Medium</option>
+                        <option value="Low" <?= ($task['priority'] == 'Low') ? 'selected' : '' ?>>Low</option>
                     </select>
                 </div>
 
