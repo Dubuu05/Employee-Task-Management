@@ -2,33 +2,65 @@
 session_start();
 
 if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'admin') {       
+
     include "DB_connection.php";
     include "app/Model/Task.php";
     include "app/Model/User.php";
 
     $text = "All Tasks";
+    $view_idle = false;
+    $weekly_report = false;
+    $monthly_report = false;
 
-    if(isset($_GET['due_date']) && $_GET['due_date'] == "Due Today") {
+    // FIX: prevent foreach error
+    $tasks = [];
+
+    // =========================
+    // FILTERS
+    // =========================
+
+    if (isset($_GET['view']) && $_GET['view'] == "idle") {
+
+        $text = "Idle Employees";
+        $view_idle = true;
+        $users = get_all_users($conn);
+
+    } elseif (isset($_GET['view']) && $_GET['view'] == "weekly_report") {
+
+        $text = "Weekly Report";
+        $weekly_report = true;
+
+    } elseif (isset($_GET['view']) && $_GET['view'] == "monthly_report") {
+
+        $text = "Monthly Report";
+        $monthly_report = true;
+
+    } elseif (isset($_GET['due_date']) && $_GET['due_date'] == "Due Today") {
+
         $text = "Due Today";
         $tasks = get_all_tasks_due_today($conn); 
         $num_task = count_tasks_due_today($conn);
 
     } elseif (isset($_GET['due_date']) && $_GET['due_date'] == "Overdue") {
+
         $text = "Overdue";
         $tasks = get_all_tasks_overdue($conn); 
         $num_task = count_tasks_overdue($conn);
 
-    } else if(isset($_GET['due_date']) && $_GET['due_date'] == "No Deadline") {
+    } elseif (isset($_GET['due_date']) && $_GET['due_date'] == "No Deadline") {
+
         $text = "No Deadline";
         $tasks = get_all_tasks_no_deadline($conn); 
         $num_task = count_tasks_no_deadline($conn);
 
     } else {
+
         $tasks = get_all_tasks($conn); 
         $num_task = count_tasks($conn);
     }
 
-    $users = get_all_users($conn); 
+    $all_users = get_all_users($conn);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -36,130 +68,238 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     <title>All Tasks</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+    @media print {
+        body * { visibility: hidden; }
+        .print-area, .print-area * { visibility: visible; }
+        .print-area { position: absolute; left:0; top:0; width:100%; }
+        .no-print { display:none; }
+    }
+    </style>
+
 </head>
 <body>
-    <input type="checkbox" id="checkbox">
-    <?php include "inc/header.php"; ?>
-    <div class="body">
-        <?php include "inc/nav.php"; ?>
 
-        <section class="section-1">
+<input type="checkbox" id="checkbox">
+<?php include "inc/header.php"; ?>
 
-            <h4 class="title-2">
-                <a href="create_task.php" class="btn">Create Task</a>
-                <a href="tasks.php?due_date=Due Today">Due Today</a>
-                <a href="tasks.php?due_date=Overdue">Overdue</a>
-                <a href="tasks.php?due_date=No Deadline">No Deadline</a>
-                <a href="tasks.php">All Tasks</a>
-            </h4>
+<div class="body">
+<?php include "inc/nav.php"; ?>
 
-            <h4 class="title-2"><?= $text ?> (<?= $num_task ?>)</h4>
+<section class="section-1">
 
-            <?php if (isset($_GET['success'])) { ?> 
-                <div class="success">
-                    <?= stripslashes($_GET['success']); ?>
-                </div>
-            <?php } ?>
+    <h4 class="title-2 no-print">
+        <a href="create_task.php" class="btn">Create Task</a>
+        <a href="tasks.php?due_date=Due Today">Due Today</a>
+        <a href="tasks.php?due_date=Overdue">Overdue</a>
+        <a href="tasks.php?due_date=No Deadline">No Deadline</a>
+        <a href="tasks.php">All Tasks</a>
+        <a href="tasks.php?view=idle">Employees No Active Tasks</a>
+        <a href="tasks.php?view=weekly_report">Weekly Report</a>
+        <a href="tasks.php?view=monthly_report">Monthly Report</a>
+    </h4>
 
-            <?php if ($tasks != 0) { ?>
-                <table class="main-table">
+    <h4 class="title-2"><?= $text ?></h4>
+
+    <?php if ($view_idle) { ?>
+
+        <!-- IDLE -->
+        <table class="main-table">
+            <tr>
+                <th>#</th>
+                <th>Employee Name</th>
+                <th>Status</th>
+            </tr>
+
+            <?php if (!empty($all_users) && is_array($all_users)) { ?>
+                <?php $i = 0; foreach ($all_users as $user) { ?>
+
+                    <?php
+                        $sql = "SELECT COUNT(*) as total 
+                                FROM tasks 
+                                WHERE assigned_to = ? 
+                                AND status != 'Completed'";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->execute([$user['id']]);
+                        $res = $stmt->fetch();
+
+                        if ($res['total'] == 0) {
+                    ?>
+
                     <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Priority</th> <!-- ✅ ADDED -->
-                        <th>Assigned To</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                        <th>File</th>
-                        <th>Action</th>
+                        <td><?= ++$i ?></td>
+                        <td><?= htmlspecialchars($user['full_name']) ?></td>
+                        <td>Idle</td>
                     </tr>
 
-                    <?php $i = 0; foreach ($tasks as $task) { ?>
-                        <tr>
-                            <td><?= ++$i ?></td>
-                            <td><?= htmlspecialchars($task['title']) ?></td>
-                            <td><?= htmlspecialchars($task['description']) ?></td>
-
-                            <!-- PRIORITY -->
-                            <td>
-                                <?php 
-                                    if ($task['priority'] == 'High') {
-                                        echo "🔴 High";
-                                    } elseif ($task['priority'] == 'Medium') {
-                                        echo "🟡 Medium";
-                                    } else {
-                                        echo "🟢 Low";
-                                    }
-                                ?>
-                            </td>
-
-                            <td>
-                                <?php 
-                                foreach($users as $user) {
-                                    if($user['id'] == $task['assigned_to']) {
-                                        echo htmlspecialchars($user['full_name']);
-                                    }
-                                }
-                                ?>
-                            </td>
-
-                            <td>
-                                <?php 
-                                    if (empty($task['due_date'])) {
-                                        echo "No Deadline";
-                                    } else {
-                                        echo htmlspecialchars($task['due_date']);
-                                    }
-                                ?>
-                            </td>
-
-                            <td><?= htmlspecialchars($task['status']) ?></td>
-
-                            <td>
-                                <?php if (!empty($task['file_path'])) { ?>
-                                    <a href="download.php?file=<?= urlencode(basename($task['file_path'])) ?>" class="edit-btn">
-                                        Download
-                                    </a>
-                                    <a href="return-task-form.php?id=<?= $task['id'] ?>" class="delete-btn" style="margin-top: 5px; display: inline-block;">Return</a>
-                                <?php } else { ?>
-                                    <span style="font-style:italic; color:#888;">No file</span>
-                                <?php } ?>
-                            </td>
-
-                            <td>
-                                <a href="edit-task.php?id=<?= $task['id'] ?>" class="edit-btn">Edit</a>
-                                <a href="delete-task.php?id=<?= $task['id'] ?>" class="delete-btn">Delete</a>
-                            </td>
-                        </tr>
                     <?php } ?>
-                </table>
-            <?php } else { ?>
-                <h3>No tasks found</h3>
+
+                <?php } ?>
+            <?php } ?>
+        </table>
+
+    <?php } elseif ($weekly_report || $monthly_report) { ?>
+
+        <!-- REPORT -->
+        <div class="print-area">
+
+            <h4 class="title-2">
+                <?= $weekly_report ? "Weekly Report" : "Monthly Report" ?>
+            </h4>
+
+            <?php
+                if ($weekly_report) {
+                    $start = date('Y-m-d', strtotime('-7 days'));
+                    $end = date('Y-m-d');
+                } else {
+                    $start = date('Y-m-01');
+                    $end = date('Y-m-t');
+                }
+
+                $stmt = $conn->prepare("SELECT COUNT(*) as total FROM tasks WHERE due_date BETWEEN ? AND ?");
+                $stmt->execute([$start, $end]);
+                $total = $stmt->fetch()['total'];
+
+                $stmt = $conn->prepare("SELECT COUNT(*) as total FROM tasks WHERE status='Completed' AND due_date BETWEEN ? AND ?");
+                $stmt->execute([$start, $end]);
+                $completed = $stmt->fetch()['total'];
+
+                $pending = $total - $completed;
+            ?>
+
+            <p>Total Tasks: <?= $total ?></p>
+            <p>Completed: <?= $completed ?></p>
+            <p>Pending: <?= $pending ?></p>
+
+            <br>
+
+            <table class="main-table">
+                <tr>
+                    <th>Employee</th>
+                    <th>Total</th>
+                    <th>Completed</th>
+                    <th>Pending</th>
+                </tr>
+
+                <?php if (!empty($all_users) && is_array($all_users)) { ?>
+                    <?php foreach ($all_users as $user) { ?>
+
+                        <?php
+                            $stmt = $conn->prepare("
+                                SELECT 
+                                    COUNT(*) as total,
+                                    SUM(status='Completed') as completed
+                                FROM tasks 
+                                WHERE assigned_to=? 
+                                AND due_date BETWEEN ? AND ?
+                            ");
+                            $stmt->execute([$user['id'], $start, $end]);
+                            $row = $stmt->fetch();
+
+                            $t = $row['total'] ?? 0;
+                            $c = $row['completed'] ?? 0;
+                            $p = $t - $c;
+                        ?>
+
+                        <tr>
+                            <td><?= htmlspecialchars($user['full_name']) ?></td>
+                            <td><?= $t ?></td>
+                            <td><?= $c ?></td>
+                            <td><?= $p ?></td>
+                        </tr>
+
+                    <?php } ?>
+                <?php } ?>
+
+            </table>
+
+            <br>
+
+            <button onclick="window.print()" class="edit-btn no-print">Print</button>
+
+            <a href="download_report.php?type=<?= $weekly_report ? 'weekly' : 'monthly' ?>" class="edit-btn no-print">
+                Download
+            </a>
+
+        </div>
+
+    <?php } else { ?>
+
+        <!-- TASKS -->
+        <table class="main-table">
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>Assigned To</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>File</th>
+                <th>Action</th>
+            </tr>
+
+            <?php if (!empty($tasks) && is_array($tasks)) { ?>
+                <?php $i = 0; foreach ($tasks as $task) { ?>
+                    <tr>
+                        <td><?= ++$i ?></td>
+                        <td><?= htmlspecialchars($task['title']) ?></td>
+                        <td><?= htmlspecialchars($task['description']) ?></td>
+
+                        <!-- ✅ RESTORED PRIORITY -->
+                        <td>
+                            <?php 
+                                if ($task['priority'] == 'High') {
+                                    echo "🔴 High";
+                                } elseif ($task['priority'] == 'Medium') {
+                                    echo "🟡 Medium";
+                                } else {
+                                    echo "🟢 Low";
+                                }
+                            ?>
+                        </td>
+
+                        <td>
+                            <?php foreach($all_users as $user) {
+                                if($user['id'] == $task['assigned_to']) {
+                                    echo htmlspecialchars($user['full_name']);
+                                }
+                            } ?>
+                        </td>
+
+                        <td><?= empty($task['due_date']) ? "No Deadline" : $task['due_date'] ?></td>
+                        <td><?= $task['status'] ?></td>
+
+                        <td>
+                            <?php if (!empty($task['file_path'])) { ?>
+                                <a href="download.php?file=<?= urlencode(basename($task['file_path'])) ?>" class="edit-btn">Download</a>
+                            <?php } else { ?>
+                                <span style="color:#888;">No file</span>
+                            <?php } ?>
+                        </td>
+
+                        <td>
+                            <a href="edit-task.php?id=<?= $task['id'] ?>" class="edit-btn">Edit</a>
+                            <a href="delete-task.php?id=<?= $task['id'] ?>" class="delete-btn">Delete</a>
+                        </td>
+                    </tr>
+                <?php } ?>
             <?php } ?>
 
-        </section>
-    </div>
+        </table>
 
-    <script>
-        var active = document.querySelector("#navlist li:nth-child(4)");
-        if(active) active.classList.add("active");
+    <?php } ?>
 
-        function askForReason(taskId) {
-            var comment = prompt("Why are you returning this task? (The employee will see this comment):");
+</section>
+</div>
 
-            if (comment !== null) {
-                window.location.href = "app/return-task.php?id=" + taskId + "&comment=" + encodeURIComponent(comment);
-            }
-        }
-    </script>
 </body>
 </html>
 
 <?php  
 } else { 
-    $em = "First login";
-    header("Location: login.php?error=$em");
+    header("Location: login.php?error=First login");
     exit(); 
 }
 ?>
