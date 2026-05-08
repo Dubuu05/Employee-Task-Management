@@ -315,3 +315,144 @@ padding-left: 10px;
 	color: #fff;
 }
 
+/*
+ NAVBAR 
+*/
+
+/* NAVBAR */
+
+.navbar-tech {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 999;
+}
+
+.logo {
+    font-family: "Bruno Ace SC", sans-serif;
+    font-size: 28px;
+    color: #00e5ff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.nav-links li a:hover {
+    color: #00e5ff;
+}
+
+/* HERO SECTION */
+
+.hero {
+    background:
+        linear-gradient(rgba(0,0,0,0.75),
+        rgba(0,0,0,0.75)),
+        url('../img/log-in.png');
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.hero-content {
+    text-align: center;
+    color: white;
+    max-width: 900px;
+}
+
+.hero-content h1 {
+	font-family: "Bruno Ace SC", sans-serif;
+    font-size: 60px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+	font-family: sans-serif;
+    font-size: 18px;
+    margin-bottom: 40px;
+    color: #d6d6d6;
+}
+
+/* LOGIN FORM */
+
+.login-form {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+
+    border-radius: 20px;
+    max-width: 450px;
+    margin: auto;
+    color: white;
+}
+
+.login-form .form-control {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: white;
+}
+
+.login-form .form-control:focus {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    box-shadow: none;
+    border: 1px solid #00e5ff;
+}
+
+.btn-tech {
+    width: 100%;
+    padding: 12px;
+    background: #00e5ff;
+    border: none;
+    color: black;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.btn-tech:hover {
+    background: #00bcd4;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 768px){
+
+    .navbar-tech {
+        padding: 20px;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero-content h1 {
+        font-size: 38px;
+    }
+
+    .hero-content p {
+        font-size: 15px;
+    }
+}
