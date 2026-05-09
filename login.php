@@ -16,7 +16,18 @@
 
 <!-- NAVBAR -->
 <nav class="navbar-tech">
-    <div class="logo">TechNova</div>
+
+    <div class="logo-container">
+
+        <img src="img/TechNova_logo.png"
+             alt="TechNova Logo"
+             class="nav-logo">
+
+        <span class="logo-text">
+            Tech<b>Nova</b>
+        </span>
+
+    </div>
 
 </nav>
 
@@ -26,7 +37,7 @@
     </div>
 
     <div class="hero-content">
-        <h1>TechNova's Task Management System</h1>
+        <h1>Welcome</h1>
         <p>
             Organize projects, manage teams, and boost productivity
             with TechNova's smart management platform.
