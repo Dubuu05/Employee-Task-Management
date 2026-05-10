@@ -17,7 +17,7 @@
 	padding-left: 17px;
 }
 .u-name b {
-	color: #127b8e;
+	color: #00e5ff;
 }
 .header i {
 	font-size: 30px;
@@ -25,7 +25,7 @@
 	color: #fff;
 }
 .header i:hover {
-	color: #127b8e;
+	color: #00e5ff;
 }
 .header .notification {
 	position: relative;
@@ -40,8 +40,64 @@
 	border-radius:50%;
 }
 .header .notification:hover i{
-	color:127b8e;
+	color: #00b4d8;
 }
+
+/* LOGO CONTAINER */
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* LOGO IMAGE */
+
+.nav-logo {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+/* LOGIN NAV LOGO */
+
+.navbar-tech .logo-container{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.navbar-tech .nav-logo{
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.navbar-tech .logo-text{
+    font-family: "Bruno Ace SC", sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: white;
+}
+
+.navbar-tech .logo-text b{
+    color: #00b4d8;
+}
+
+/* LOGO TEXT */
+
+.logo-text {
+    font-family: "Bruno Ace SC", sans-serif;
+    color: white;
+    letter-spacing: 2px;
+    font-size: 24px;
+}
+
+.logo-text b {
+    color: #00e5ff;
+	font-family: "Bruno Ace SC", sans-serif;
+}
+
 .notification-bar {
 	display: none;
 	width:90%;
@@ -107,7 +163,7 @@
 	text-overflow: ellipsis;
 }
 .side-bar ul li:hover {
-	background: #127b8e;
+	background: #00b4d8;
 }
 .side-bar ul li a {
 	text-decoration: none;
@@ -116,10 +172,10 @@
 	letter-spacing: 1px;
 }
 .side-bar .active a {
-	color: #127b8e !important;
+	color: #00b4d8 !important;
 }
 .side-bar .active a i {
-	color: #127b8e !important;
+	color: #00b4d8 !important;
 }
 .side-bar ul .active:hover {
 	background: transparent;
@@ -131,9 +187,15 @@
 }
 #navbtn {
 	display: inline-block;
-	margin-left: 70px;
-	font-size: 20px;
-	transition: 500ms color;
+	font-size: 22px;
+	margin-right: 10px;
+	cursor: pointer;
+	transition: 0.3s;
+	color: white;
+}
+
+#navbtn:hover {
+	color: #00e5ff;
 }
 #checkbox {
 	display: none;
@@ -159,8 +221,13 @@
 	max-width: 620px;
 	width: 90%;
 }
+
 .section-1 {
-padding: 30px;
+    width: 100%;
+    min-height: 100vh;
+    padding: 35px;
+
+    background: #f4f7fb;
 }
 .section-1 .title {
 margin-bottom: 10px;
@@ -290,28 +357,659 @@ padding-left: 10px;
 	padding: 10px;
 	margin-bottom: 10px;
 }
+/* DASHBOARD AREA */
+.section-1 {
+    width: 100%;
+    padding: 35px;
+
+    background:
+    linear-gradient(
+        180deg,
+        #f7f9fc,
+        #edf2f7
+    );
+
+    min-height: 100vh;
+}
+/* DASHBOARD GRID */
+
 .dashboard {
-	display: flex;
-	max-width: 650px;
-	width: 95%;
-	justify-content: space-between;
-	flex-wrap: wrap;
-}
-.dashboard-item {
-	text-align: center;
-	background: #262931;
-	width: 200px;
-	padding: 40px 5px;
-	margin-bottom: 40px;
-}
-.dashboard-item i {
-	display: block;
-	color: #fff;
-	font-size: 30px;
-	margin-bottom: 5px;
-}
-.dashboard-item span {
-	display: block;
-	color: #fff;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
 }
 
+/* MAIN CARD */
+
+.dashboard-item {
+    position: relative;
+
+    padding: 30px;
+
+    min-height: 230px;
+
+    border-radius: 30px;
+
+    overflow: hidden;
+
+    background:
+    linear-gradient(
+        145deg,
+        #eef3f8,
+        #e4ebf3
+    );
+
+    border: 1px solid rgba(0,140,170,0.10);
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,0.05);
+
+    backdrop-filter: blur(12px);
+
+    transition: 0.35s ease;
+}
+
+/* TOP GLOSS EFFECT */
+
+.dashboard-item::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(0,229,255,0.08),
+        transparent 45%
+    );
+
+    pointer-events: none;
+}
+
+/* HOVER */
+
+.dashboard-item:hover {
+
+    transform: translateY(-8px);
+
+    border-color: #00e5ff;
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,0.98),
+        rgba(235,248,255,0.95)
+    );
+
+    box-shadow:
+    0 15px 35px rgba(0,229,255,0.12),
+    0 0 30px rgba(0,229,255,0.08);
+}
+
+/* ICON BOX */
+
+.dashboard-item i {
+
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+
+    font-size: 28px;
+
+    margin-bottom: 22px;
+
+    color: #008cab;
+
+     background:
+    rgba(0,188,212,0.10);
+
+    box-shadow:
+    0 0 15px rgba(0,188,212,0.10);
+}
+
+/* TITLE */
+
+.dashboard-item h3 {
+
+    font-size: 24px;
+
+    font-weight: 600;
+    color: #1c2331;
+    margin-bottom: 14px;
+}
+
+/* NUMBER */
+
+.dashboard-item span {
+    font-size: 50px;
+    font-weight: bold;
+    color: #0095b6;
+}
+
+/* PREVIEW TEXT */
+
+.card-preview {
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+    color: #5d6b82;
+}
+
+/* INDIVIDUAL GLOW COLORS */
+
+.card-blue:hover {
+    box-shadow:
+    0 0 20px rgba(0,229,255,0.35),
+    0 0 50px rgba(0,229,255,0.20);
+}
+
+.card-pink:hover {
+    box-shadow:
+    0 0 20px rgba(255,80,220,0.35),
+    0 0 50px rgba(255,80,220,0.18);
+}
+
+.card-purple:hover {
+    box-shadow:
+    0 0 20px rgba(180,120,255,0.35),
+    0 0 50px rgba(180,120,255,0.18);
+}
+
+.card-orange:hover {
+    box-shadow:
+    0 0 20px rgba(255,170,80,0.35),
+    0 0 50px rgba(255,170,80,0.18);
+}
+
+.card-cyan:hover {
+    box-shadow:
+    0 0 20px rgba(0,255,255,0.35),
+    0 0 50px rgba(0,255,255,0.18);
+}
+
+.card-green:hover {
+    box-shadow:
+    0 0 20px rgba(80,255,180,0.35),
+    0 0 50px rgba(80,255,180,0.18);
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 1100px){
+
+    .dashboard{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media(max-width: 700px){
+
+    .dashboard{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* NAVBAR */
+
+.navbar-tech {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 999;
+}
+
+.logo {
+    font-family: "Bruno Ace SC", sans-serif;
+    font-size: 28px;
+    color: #00e5ff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.nav-links li a:hover {
+    color: #00e5ff;
+}
+
+/* HERO SECTION */
+
+.hero {
+    background:
+        linear-gradient(rgba(0,0,0,0.75),
+        rgba(0,0,0,0.75)),
+        url('../img/log-in.png');
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.hero-content {
+    text-align: center;
+    color: white;
+    max-width: 900px;
+}
+
+.hero-content h1 {
+	font-family: "Bruno Ace SC", sans-serif;
+    font-size: 60px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+	font-family: sans-serif;
+    font-size: 18px;
+    margin-bottom: 40px;
+    color: #d6d6d6;
+}
+
+/* LOGIN FORM */
+
+.login-form {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+
+    border-radius: 20px;
+    max-width: 450px;
+    margin: auto;
+    color: white;
+}
+
+.login-form .form-control {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: white;
+}
+
+.login-form .form-control:focus {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    box-shadow: none;
+    border: 1px solid #00e5ff;
+}
+
+.btn-tech {
+    width: 100%;
+    padding: 12px;
+    background: #00e5ff;
+    border: none;
+    color: black;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.btn-tech:hover {
+    background: #00bcd4;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 768px){
+
+    .navbar-tech {
+        padding: 20px;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero-content h1 {
+        font-size: 38px;
+    }
+
+    .hero-content p {
+        font-size: 15px;
+    }
+}
+
+
+
+/* TASK PHP PAGE */
+/* =========================
+   FILTER BAR LAYOUT
+========================= */
+.filter-bar{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+/* =========================
+   FILTER BUTTONS
+========================= */
+.filter-btn{
+    display:inline-block;
+    text-decoration:none !important;
+    border:none;
+    padding:10px 18px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    color:#fff !important;
+    transition:0.3s ease;
+}
+
+/* =========================
+   FILTER BUTTON HOVER
+========================= */
+.filter-btn:hover{
+    opacity:0.9;
+    transform:translateY(-1px);
+}
+
+/* =========================
+   PREVENT VISITED LINK COLOR
+========================= */
+.filter-btn:visited{
+    color:#fff !important;
+}
+
+/* =========================
+   CREATE TASK BUTTON
+========================= */
+.create-btn{
+    background:#16a34a;
+}
+
+.create-btn:hover{
+    background:#15803d;
+}
+
+/* =========================
+   DUE TODAY BUTTON
+========================= */
+.due{
+    background:#2563eb;
+}
+
+.due:hover{
+    background:#1d4ed8;
+}
+
+/* =========================
+   OVERDUE BUTTON
+========================= */
+.overdue{
+    background:#dc2626;
+}
+
+.overdue:hover{
+    background:#b91c1c;
+}
+
+/* =========================
+   NO DEADLINE BUTTON
+========================= */
+.nodate{
+    background:#6b7280;
+}
+
+.nodate:hover{
+    background:#4b5563;
+}
+
+/* =========================
+   ALL TASKS BUTTON
+========================= */
+.all{
+    background:#111827;
+}
+
+.all:hover{
+    background:#000000;
+}
+
+/* =========================
+   IDLE EMPLOYEES BUTTON
+========================= */
+.idle{
+    background:#0891b2;
+}
+
+.idle:hover{
+    background:#0e7490;
+}
+
+/* =========================
+   WEEKLY REPORT BUTTON
+========================= */
+.weekly{
+    background:#16a34a;
+}
+
+.weekly:hover{
+    background:#15803d;
+}
+
+/* =========================
+   MONTHLY REPORT BUTTON
+========================= */
+.monthly{
+    background:#7c3aed;
+}
+
+.monthly:hover{
+    background:#6d28d9;
+}
+
+/* =====================================================
+   MODERN TASK TABLE DESIGN
+===================================================== */
+
+/* PAGE SECTION */
+.section-1{
+    width:100%;
+    min-height:100vh;
+    padding:30px;
+    background:#f3f4f6;
+}
+
+/* PAGE TITLE */
+.title-2{
+    font-size:28px;
+    font-weight:700;
+    color:#111827;
+    margin-bottom:20px;
+}
+
+/* TABLE CONTAINER */
+.table-container{
+    width:100%;
+    overflow-x:auto;
+    border-radius:14px;
+}
+
+/* MAIN TABLE */
+.main-table{
+    width:100%;
+    border-collapse:collapse;
+    background:#ffffff;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* TABLE HEADER */
+.main-table th{
+    background:#1f2937;
+    color:#ffffff;
+    padding:18px;
+    text-align:left;
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+/* TABLE CELLS */
+.main-table td{
+    padding:16px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+    color:#374151;
+    vertical-align:middle;
+}
+
+/* REMOVE LAST BORDER */
+.main-table tr:last-child td{
+    border-bottom:none;
+}
+
+/* ZEBRA STRIPES */
+.main-table tr:nth-child(even){
+    background:#f9fafb;
+}
+
+/* HOVER EFFECT */
+.main-table tr:hover{
+    background:#eef2ff;
+    transition:0.2s ease;
+}
+
+/* PRIORITY COLORS */
+.priority-high{
+    color:#dc2626;
+    font-weight:bold;
+}
+
+.priority-medium{
+    color:#d97706;
+    font-weight:bold;
+}
+
+.priority-low{
+    color:#16a34a;
+    font-weight:bold;
+}
+
+/* STATUS BADGES */
+.status-completed{
+    background:#dcfce7;
+    color:#166534;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+    display:inline-block;
+}
+
+.status-pending{
+    background:#fef3c7;
+    color:#92400e;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+    display:inline-block;
+}
+
+.status-progress{
+    background:#dbeafe;
+    color:#1d4ed8;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+    display:inline-block;
+}
+
+/* EDIT BUTTON */
+.edit-btn{
+    text-decoration:none;
+    display:inline-block;
+    background:#2563eb;
+    color:#fff;
+    padding:8px 14px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+    transition:0.2s ease;
+    margin-right:5px;
+}
+
+.edit-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-1px);
+}
+
+/* DELETE BUTTON */
+.delete-btn{
+    text-decoration:none;
+    display:inline-block;
+    background:#dc2626;
+    color:#fff;
+    padding:8px 14px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+    transition:0.2s ease;
+}
+
+.delete-btn:hover{
+    background:#b91c1c;
+    transform:translateY(-1px);
+}
+
+/* NO FILE */
+.no-file{
+    color:#9ca3af;
+    font-style:italic;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+
+    .main-table th,
+    .main-table td{
+        padding:12px;
+        font-size:12px;
+    }
+
+    .title-2{
+        font-size:22px;
+    }
+
+}
