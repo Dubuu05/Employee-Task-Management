@@ -1,10 +1,15 @@
 <?php 
-  include_once "app/Model/Notification.php";
-  if (isset($_SESSION['id'])) {
-      $header_notifications = get_all_my_notifications($conn, $_SESSION['id']);
-  } else {
-      $header_notifications = 0;
-  }
+
+// 🔌 ALWAYS load DB connection first
+include_once "DB_connection.php";
+include_once "app/Model/Notification.php";
+
+// 🧠 Safely get notifications
+if (isset($_SESSION['id']) && isset($conn)) {
+    $header_notifications = get_all_my_notifications($conn, $_SESSION['id']);
+} else {
+    $header_notifications = [];
+}
 ?>
 
 <header class="header">
@@ -13,6 +18,7 @@
             <i id="navbtn" class="fa fa-bars" aria-hidden="true"></i>
         </label>
     </h2>
+
     <span class="notification" id="notificationBtn">
         <i class="fa fa-bell" aria-hidden="true"></i>
         <span id="notificationNum"></span>
@@ -21,26 +27,25 @@
 
 <div class="notification-bar" id="notificationBar">
     <ul>
-        <?php 
-        if ($header_notifications != 0 && !empty($header_notifications)) { 
-            foreach ($header_notifications as $notif) { 
-        ?>
-            <li>
-                <a href="app/notifications-read.php?notification_id=<?= $notif['id'] ?>">
-                    <?php if ($notif['is_read'] == 0) { ?>
-                        <mark><?= htmlspecialchars($notif['type']) ?>:</mark> 
-                    <?php } else { ?>
-                        <span><?= htmlspecialchars($notif['type']) ?>:</span>
-                    <?php } ?>
-                    
-                    <?= htmlspecialchars($notif['message']) ?>
-                    &nbsp;&nbsp;<small><?= $notif['date'] ?></small>
-                </a>
-            </li>
-        <?php 
-            } 
-        } else { 
-        ?>
+        <?php if (!empty($header_notifications)) { ?>
+            
+            <?php foreach ($header_notifications as $notif) { ?>
+                <li>
+                    <a href="app/notifications-read.php?notification_id=<?= $notif['id'] ?>">
+                        
+                        <?php if ($notif['is_read'] == 0) { ?>
+                            <mark><?= htmlspecialchars($notif['type']) ?>:</mark> 
+                        <?php } else { ?>
+                            <span><?= htmlspecialchars($notif['type']) ?>:</span>
+                        <?php } ?>
+
+                        <?= htmlspecialchars($notif['message']) ?>
+                        &nbsp;&nbsp;<small><?= $notif['date'] ?></small>
+                    </a>
+                </li>
+            <?php } ?>
+
+        <?php } else { ?>
             <li><a href="#">No new notifications</a></li>
         <?php } ?>
     </ul>
@@ -50,8 +55,10 @@
 <script type="text/javascript">
     // Dropdown toggle logic
     let openNotification = false;
+
     const notification = () => {
         let notificationBar = document.querySelector("#notificationBar");
+
         if (openNotification) {
             notificationBar.classList.remove('open-notification');
             openNotification = false;
@@ -62,17 +69,15 @@
     }
 
     let notificationBtn = document.querySelector("#notificationBtn");
-    if(notificationBtn) {
+    if (notificationBtn) {
         notificationBtn.addEventListener("click", notification);
     }
 
-    // AJAX count logic
-    $(document).ready(function(){
-        // I-load ang count agad
+    // AJAX notification count
+    $(document).ready(function () {
         $("#notificationNum").load("app/notification-count.php");
-        
-        // Refresh count every 3 seconds para makita agad ang pagbawas
-        setInterval(function(){
+
+        setInterval(function () {
             $("#notificationNum").load("app/notification-count.php");
         }, 3000);
     });
