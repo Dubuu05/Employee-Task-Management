@@ -13,12 +13,23 @@ if (isset($_SESSION['id']) && isset($conn)) {
 ?>
 
 <header class="header">
-    <h2 class="u-name">Bff <b>Ni Matt</b>
-        <label for="checkbox">
-            <i id="navbtn" class="fa fa-bars" aria-hidden="true"></i>
-        </label>
-    </h2>
+   <h2 class="u-name logo-container">
 
+    <!-- MENU BUTTON FIRST -->
+    <label for="checkbox">
+        <i id="navbtn" class="fa fa-bars" aria-hidden="true"></i>
+    </label>
+
+    <!-- LOGO -->
+    <img src="img/TechNova_logo.png" 
+         alt="TechNova Logo" 
+         class="nav-logo">
+
+    <!-- TEXT -->
+    <span class="logo-text">
+        Tech<b>Nova</b>
+    </span>
+    </h2>
     <span class="notification" id="notificationBtn">
         <i class="fa fa-bell" aria-hidden="true"></i>
         <span id="notificationNum"></span>
