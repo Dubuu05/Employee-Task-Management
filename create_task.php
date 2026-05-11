@@ -20,10 +20,28 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     <div class="body">
         <?php include "inc/nav.php"; ?>
 
-        <section class="section-1">
-            <h4 class="title">Create Task</h4>
+       <section class="section-1">
 
-            <form class="form-1" method="POST" action="app/add-task.php">
+    <div class="create-task-container">
+
+        <!-- HEADER -->
+        <div class="create-task-header">
+
+            <div>
+                <h1>Create Task</h1>
+                <p>Create and assign tasks to employees easily.</p>
+            </div>
+
+            <div class="header-icon">
+                <i class="fa fa-tasks"></i>
+            </div>
+
+        </div>
+
+        <!-- FORM CARD -->
+        <div class="task-card">
+
+            <form class="modern-form" method="POST" action="app/add-task.php">
 
                 <?php if (isset($_GET['error'])) { ?> 
                     <div class="danger">
@@ -38,59 +56,113 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                 <?php } ?>
 
                 <!-- TITLE -->
-                <div class="input-holder">
-                    <label>Title</label>
-                    <input type="text" name="title" class="input-1" placeholder="Title" required>
+                <div class="form-group">
+                    <label>
+                        <i class="fa fa-pencil"></i>
+                        Task Title
+                    </label>
+
+                    <input 
+                        type="text" 
+                        name="title" 
+                        class="modern-input" 
+                        placeholder="Enter task title..."
+                        required
+                    >
                 </div>
 
                 <!-- DESCRIPTION -->
-                <div class="input-holder">
-                    <label>Description</label>
-                    <textarea name="description" class="input-1" placeholder="Description" required></textarea>
+                <div class="form-group">
+                    <label>
+                        <i class="fa fa-align-left"></i>
+                        Description
+                    </label>
+
+                    <textarea 
+                        name="description" 
+                        class="modern-input textarea" 
+                        placeholder="Write task details..."
+                        required
+                    ></textarea>
                 </div>
 
-                <!-- DUE DATE -->
-                <div class="input-holder">
-                    <label>Due Date</label>
-                    <input type="date" name="due_date" class="input-1" required>
-                </div>
+                <!-- GRID -->
+                <div class="form-grid">
 
-                <!-- PRIORITY (NEW) -->
-                <div class="input-holder">
-                    <label>Priority</label>
-                    <select name="priority" class="input-1" required>
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                    </select>
+                    <!-- DUE DATE -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-calendar"></i>
+                            Due Date
+                        </label>
+
+                        <input 
+                            type="date" 
+                            name="due_date" 
+                            class="modern-input"
+                            required
+                        >
+                    </div>
+
+                    <!-- PRIORITY -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-flag"></i>
+                            Priority
+                        </label>
+
+                        <select name="priority" class="modern-input" required>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <!-- ASSIGNED TO -->
-                <div class="input-holder">
-                    <label>Assigned To</label>
-                    <select name="assigned_to" class="input-1" required>
+                <div class="form-group">
+                    <label>
+                        <i class="fa fa-user"></i>
+                        Assign Employee
+                    </label>
+
+                    <select name="assigned_to" class="modern-input" required>
+
                         <option value="0">Select Employee</option>
 
                         <?php if ($users != 0) { 
                             foreach ($users as $user) { 
                         ?>
-                            <option value="<?= $user['id'] ?>">
-                                <?= $user['full_name'] ?>
-                            </option>
+
+                        <option value="<?= $user['id'] ?>">
+                            <?= $user['full_name'] ?>
+                        </option>
+
                         <?php 
                             } 
                         } 
                         ?>
 
                     </select>
-                </div>  
+                </div>
 
-                <button class="edit-btn">Create Task</button>
+                <!-- BUTTON -->
+                <button class="create-task-btn">
+
+                    <i class="fa fa-plus-circle"></i>
+
+                    Create Task
+
+                </button>
 
             </form>
 
-        </section>
+        </div>
+
     </div>
+
+</section>
 
     <script type="text/javascript">
         var active = document.querySelector("#navlist li:nth-child(3)");
