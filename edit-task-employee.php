@@ -27,28 +27,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     <title>Edit Task</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
-
-    <style>
-        .status-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 5px;
-        }
-
-        .status-buttons button {
-            padding: 6px 12px;
-            border: 1px solid #ccc;
-            background: white;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .status-buttons button.active {
-            background: #28a745;
-            color: white;
-            border-color: #28a745;
-        }
-    </style>
 </head>
 
 <body>
