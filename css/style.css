@@ -1643,3 +1643,102 @@ select.modern-input{
         width:100%;
     }
 }
+
+/* PROFILE PAGE */
+
+.profile-section{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    min-height:100vh;
+}
+
+.profile-wrapper{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+}
+
+.profile-card{
+
+    width:600px;
+
+    min-height:70vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    padding:40px;
+}
+
+.profile-top{
+
+    margin-bottom:25px;
+}
+
+.profile-actions{
+    display:flex;
+    justify-content:space-between;
+    width:100%;
+    margin-top:30px;
+}
+
+.left-btn,
+.right-btn{
+    flex:1;
+}
+
+.right-btn{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.left-btn{
+    display:flex;
+    justify-content:flex-start;
+}
+
+.profile-section{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.profile-wrapper{
+    width:100%;
+    display:flex;
+    justify-content:center;
+}
+
+.profile-card{
+    width:100%;
+    max-width:650px; /* dito bawas width */
+    min-height:60vh;
+    margin:auto;
+    padding:30px 40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    border-radius:12px; /* optional nice look */
+}
+
+
+.back-btn{
+    background:#6b7280 !important;
+}
+
+.back-btn:hover{
+    box-shadow:0 0 12px rgba(107,114,128,0.35);
+}
