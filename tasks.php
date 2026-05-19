@@ -596,6 +596,10 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 </div>
 
 </body>
+<script type="text/javascript">
+        var active = document.querySelector("#navlist li:nth-child(4)");
+        if(active) active.classList.add("active");
+    </script>
 </html>
 
 <?php
