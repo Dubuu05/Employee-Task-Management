@@ -2,69 +2,67 @@
 session_start();
 
 if (isset($_POST['user_name']) && isset($_POST['password'])) {
+
     include "../DB_connection.php";
 
     function validate_input($data) {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
+        return trim(htmlspecialchars(stripslashes($data)));
     }
 
     $user_name = validate_input($_POST['user_name']);
     $password = validate_input($_POST['password']);
 
     if (empty($user_name)) {
-        $em = "User name is required!";
-        header("Location: ../login.php?error=" . urlencode($em));
+        header("Location: ../login.php?error=" . urlencode("User name is required!"));
         exit();
-    } else if (empty($password)) {
-        $em = "Password is required!";
-        header("Location: ../login.php?error=" . urlencode($em));
-        exit();
-    } else {
+    }
 
-        $sql = "SELECT * FROM users WHERE username = ?";
+    if (empty($password)) {
+        header("Location: ../login.php?error=" . urlencode("Password is required!"));
+        exit();
+    }
+
+    try {
+
+        $sql = "SELECT * FROM users WHERE LTRIM(RTRIM(username)) = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$user_name]);
 
-        if ($stmt->rowCount() == 1) {
-            $user = $stmt->fetch();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $usernameDb = $user['username'];
+        if ($user) {
+
+            $usernameDb = trim($user['username']);
             $passwordDb = $user['password'];
             $role = $user['role'];
             $id = $user['id'];
 
-            if ($user_name === $usernameDb && password_verify($password, $passwordDb)) {
+            if (password_verify($password, $passwordDb)) {
 
-                // ✅ SESSION SETUP (FIXED)
                 $_SESSION['role'] = $role;
                 $_SESSION['id'] = $id;
                 $_SESSION['username'] = $usernameDb;
-
-                // 🔥 FIX: FULL NAME SUPPORT (no more "An employee")
                 $_SESSION['full_name'] = $user['full_name'] ?? $usernameDb;
 
                 header("Location: ../index.php");
                 exit();
 
             } else {
-                $em = "Incorrect username or password!";
-                header("Location: ../login.php?error=" . urlencode($em));
+                header("Location: ../login.php?error=" . urlencode("Incorrect username or password!"));
                 exit();
             }
 
         } else {
-            $em = "Incorrect username or password!";
-            header("Location: ../login.php?error=" . urlencode($em));
+            header("Location: ../login.php?error=" . urlencode("Incorrect username or password!"));
             exit();
         }
+
+    } catch (PDOException $e) {
+        die("Database error: " . $e->getMessage());
     }
 
 } else {
-    $em = "Unknown error occurred!";
-    header("Location: ../login.php?error=" . urlencode($em));
+    header("Location: ../login.php?error=" . urlencode("Unknown error occurred!"));
     exit();
 }
 ?>

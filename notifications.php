@@ -2,6 +2,7 @@
 session_start();
 
 if (isset($_SESSION['role']) && isset($_SESSION['id'])) {       
+
     include "DB_connection.php";
     include "app/Model/Notification.php";
 
@@ -15,88 +16,104 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <input type="checkbox" id="checkbox">
-    <?php include "inc/header.php"; ?>
-    <div class="body">
-        <?php include "inc/nav.php"; ?>
 
-        <section class="section-1 notifications-page">
-            <h4 class="title">All Notifications</h4>
+<input type="checkbox" id="checkbox">
 
-            <?php if (isset($_GET['success'])) { ?> 
-                <div class="success">
-                    <?= stripslashes($_GET['success']); ?>
-                </div>
-            <?php } ?>
+<?php include "inc/header.php"; ?>
+<div class="body">
+    <?php include "inc/nav.php"; ?>
 
-            <?php if ($notifications != 0 && !empty($notifications)) { ?>
-                
-                <table class="main-table">
-                    <tr>
-                        <th>#</th>
-                        <th>Message</th>
-                        <th>Priority</th> <!-- ✅ ADDED -->
-                        <?php if ($_SESSION['role'] === 'employee') { ?>
-                            <th>Type</th>
-                        <?php } ?>
-                        <th>Date</th>
-                    </tr>
+    <section class="section-1 notifications-page">
+        <h4 class="title">All Notifications</h4>
 
-                    <?php 
-                    $i = 1; 
-                    foreach ($notifications as $notif) { 
-                    ?>
-                    <tr>
-                        <td><?= $i ?></td>
-
-                        <!-- MESSAGE -->
-                        <td><?= htmlspecialchars($notif['message']) ?></td>
-
-                        <!-- PRIORITY (from message text) -->
-                        <td>
-                        <?php
-                            if (strpos($notif['message'], 'High') !== false) {
-                            echo "<span class='priority-high'>🔴 High</span>";
-                            } elseif (strpos($notif['message'], 'Medium') !== false) {
-                            echo "<span class='priority-medium'>🟡 Medium</span>";
-                            } else {
-                            echo "<span class='priority-low'>🟢 Low</span>";
-                            }
-                            ?>
-                            </td>
-
-                        <?php if ($_SESSION['role'] === 'employee') { ?>
-                            <td><?= htmlspecialchars($notif['type']) ?></td>
-                        <?php } ?>
-
-                        <td><?= $notif['date'] ?></td>
-                    </tr>
-                    <?php 
-                        $i++;
-                    } 
-                    ?>
-                </table>
-
-            <?php } else { ?>
-                <div class="input-holder">
-                    <h3>Empty Notifications</h3>
-                </div>
-            <?php } ?>
-
-        </section>
-    </div>
-
-    <script type="text/javascript">
-        <?php if ($_SESSION['role'] === 'admin') { ?>
-            var active = document.querySelector("#navlist li:nth-child(5)");
-        <?php } else { ?>
-            var active = document.querySelector("#navlist li:nth-child(4)");
+        <?php if (isset($_GET['success'])) { ?> 
+            <div class="success">
+                <?= stripslashes($_GET['success']); ?>
+            </div>
         <?php } ?>
 
-        if (active) {
-            active.classList.add("active");
-        }
-    </script>
+        <?php if (!empty($notifications) && $notifications != 0) { ?>
+
+            <table class="main-table">
+                <tr>
+                    <th>#</th>
+                    <th>Message</th>
+                    <th>Priority</th>
+
+                    <?php if ($_SESSION['role'] === 'employee') { ?>
+                        <th>Type</th>
+                    <?php } ?>
+
+                    <th>Date</th>
+                </tr>
+
+                <?php 
+                $i = 1; 
+                foreach ($notifications as $notif) { 
+                ?>
+                <tr>
+                    <td><?= $i ?></td>
+
+                    <!-- MESSAGE -->
+                    <td><?= htmlspecialchars($notif['message'] ?? '') ?></td>
+
+                    <!-- PRIORITY -->
+                    <td>
+                        <?php
+                        $msg = $notif['message'] ?? '';
+
+                        if (strpos($msg, 'High') !== false) {
+                            echo "<span class='priority-high'>🔴 High</span>";
+                        } elseif (strpos($msg, 'Medium') !== false) {
+                            echo "<span class='priority-medium'>🟡 Medium</span>";
+                        } else {
+                            echo "<span class='priority-low'>🟢 Low</span>";
+                        }
+                        ?>
+                    </td>
+
+                    <!-- TYPE (employee only) -->
+                    <?php if ($_SESSION['role'] === 'employee') { ?>
+                        <td><?= htmlspecialchars($notif['type'] ?? '') ?></td>
+                    <?php } ?>
+
+                    <!-- DATE FIXED -->
+                    <td>
+                        <?php
+                        if (!empty($notif['created_at'])) {
+                            echo date("F d, Y h:i A", strtotime($notif['created_at']));
+                        } else {
+                            echo "No date";
+                        }
+                        ?>
+                    </td>
+
+                </tr>
+                <?php $i++; } ?>
+
+            </table>
+
+        <?php } else { ?>
+            <div class="input-holder">
+                <h3>Empty Notifications</h3>
+            </div>
+        <?php } ?>
+
+    </section>
+</div>
+
+<script type="text/javascript">
+<?php if ($_SESSION['role'] === 'admin') { ?>
+    var active = document.querySelector("#navlist li:nth-child(5)");
+<?php } else { ?>
+    var active = document.querySelector("#navlist li:nth-child(4)");
+<?php } ?>
+
+if (active) {
+    active.classList.add("active");
+}
+</script>
+
 </body>
 </html>
 

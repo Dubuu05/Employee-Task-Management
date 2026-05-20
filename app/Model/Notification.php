@@ -1,33 +1,41 @@
 <?php
 
 function get_all_my_notifications($conn, $id) {
-    $sql = "SELECT * FROM notifications WHERE  recipient=?";
+    $sql = "SELECT * FROM notifications 
+            WHERE recipient = ? 
+            ORDER BY id DESC";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
-    
-    if ($stmt->rowCount() > 0) {
-        $notifications = $stmt->fetchAll();
-    } else $notifications = 0;
 
-    return $notifications;
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function count_notification($conn, $id){
-    $sql = "SELECT id FROM notifications WHERE recipient=? AND is_read=0";
+    $sql = "SELECT COUNT(*) 
+            FROM notifications 
+            WHERE recipient = ? AND is_read = 0";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
 
-    return $stmt->rowCount();
+    return $stmt->fetchColumn();
 }
 
 function insert_notification($conn, $data){
-    $sql = "INSERT INTO notifications (message, recipient, type) VALUES(?,?,?)";
+    $sql = "INSERT INTO notifications 
+            (message, recipient, type, is_read, created_at)
+            VALUES (?, ?, ?, 0, GETDATE())";
+
     $stmt = $conn->prepare($sql);
-    $stmt->execute($data);
+    return $stmt->execute($data);
 }
 
 function notification_make_read($conn, $recipient_id, $notification_id){
-    $sql = "UPDATE notifications SET is_read=1 WHERE id=? AND recipient=?";
+    $sql = "UPDATE notifications 
+            SET is_read = 1 
+            WHERE id = ? AND recipient = ?";
+
     $stmt = $conn->prepare($sql);
-    $stmt->execute([$notification_id, $recipient_id]);
+    return $stmt->execute([$notification_id, $recipient_id]);
 }

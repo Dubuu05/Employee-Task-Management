@@ -1,94 +1,103 @@
 <?php
 
+// =======================================================
+// INSERT TASK
+// =======================================================
 function insert_task($conn, $data) {
-    $sql = "INSERT INTO tasks (title, description, assigned_to, due_date, priority) 
-            VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO tasks 
+            (title, description, assigned_to, due_date, priority, status, created_at)
+            VALUES (?, ?, ?, ?, ?, 'pending', GETDATE())";
+
     $stmt = $conn->prepare($sql);
-    $stmt->execute($data);
+    return $stmt->execute([
+        $data[0],
+        $data[1],
+        $data[2],
+        $data[3],
+        $data[4]
+    ]);
 }
 
 
+// =======================================================
+// GET ALL TASKS
+// =======================================================
 function get_all_tasks($conn) {
     $sql = "SELECT * FROM tasks ORDER BY id DESC";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
-    return ($stmt->rowCount() > 0) ? $stmt->fetchAll() : 0;
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 
-function get_all_tasks_due_today($conn) {
-    $sql = "SELECT * FROM tasks WHERE due_date = CURDATE() ORDER BY id DESC";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    return ($stmt->rowCount() > 0) ? $stmt->fetchAll() : 0;
-}
-
-function count_tasks_due_today($conn) {
-    $sql = "SELECT COUNT(*) FROM tasks WHERE due_date = CURDATE()";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchColumn();
-}
-
-
-function get_all_tasks_overdue($conn) {
-    $sql = "SELECT * FROM tasks 
-            WHERE due_date IS NOT NULL 
-            AND due_date != '0000-00-00'
-            AND due_date < CURDATE() 
-            AND status != 'completed'
-            ORDER BY id DESC";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    return ($stmt->rowCount() > 0) ? $stmt->fetchAll() : 0;
-}
-
-function count_tasks_overdue($conn) {
-    $sql = "SELECT COUNT(*) FROM tasks 
-            WHERE due_date IS NOT NULL 
-            AND due_date != '0000-00-00'
-            AND due_date < CURDATE() 
-            AND status != 'completed'";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchColumn();
-}
-
-
-function get_all_tasks_no_deadline($conn) {
-    $sql = "SELECT * FROM tasks 
-            WHERE due_date IS NULL OR due_date = '0000-00-00' 
-            ORDER BY id DESC";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    return ($stmt->rowCount() > 0) ? $stmt->fetchAll() : 0;
-}
-
-function count_tasks_no_deadline($conn) {
-    $sql = "SELECT COUNT(*) FROM tasks 
-            WHERE due_date IS NULL OR due_date = '0000-00-00'";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchColumn();
-}
-
-
-function get_all_tasks_by_id($conn, $id) {
-    $sql = "SELECT * FROM tasks WHERE assigned_to = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$id]);
-    return ($stmt->rowCount() > 0) ? $stmt->fetchAll() : 0;
-}
-
-
+// =======================================================
+// GET TASK BY ID
+// =======================================================
 function get_task_by_id($conn, $id) {
     $sql = "SELECT * FROM tasks WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
-    return ($stmt->rowCount() > 0) ? $stmt->fetch() : 0;
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 
+// =======================================================
+// GET TASKS BY USER
+// =======================================================
+function get_all_tasks_by_id($conn, $id) {
+    $sql = "SELECT * FROM tasks WHERE assigned_to = ? ORDER BY id DESC";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+// =======================================================
+// UPDATE FULL TASK
+// =======================================================
+function update_task($conn, $data) {
+    $sql = "UPDATE tasks
+            SET title = ?, description = ?, assigned_to = ?, due_date = ?, priority = ?
+            WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    return $stmt->execute($data);
+}
+
+
+// =======================================================
+// UPDATE TASK STATUS (EMPLOYEE FIX)
+// =======================================================
+function update_task_status($conn, $data) {
+    $sql = "UPDATE tasks SET status = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    return $stmt->execute($data);
+}
+
+
+// =======================================================
+// UPDATE STATUS + FILE
+// =======================================================
+function update_task_status_and_file($conn, $id, $status, $file_path) {
+    $sql = "UPDATE tasks SET status = ?, file_path = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    return $stmt->execute([$status, $file_path, $id]);
+}
+
+
+// =======================================================
+// DELETE TASK
+// =======================================================
+function delete_task($conn, $data) {
+    $sql = "DELETE FROM tasks WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    return $stmt->execute($data);
+}
+
+
+// =======================================================
+// COUNT ALL TASKS
+// =======================================================
 function count_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks";
     $stmt = $conn->prepare($sql);
@@ -97,36 +106,49 @@ function count_tasks($conn) {
 }
 
 
-function update_task($conn, $data) {
-    $sql = "UPDATE tasks 
-            SET title = ?, description = ?, assigned_to = ?, due_date = ?, priority = ? 
-            WHERE id = ?";
+// =======================================================
+// DUE TODAY
+// =======================================================
+function count_tasks_due_today($conn) {
+    $sql = "SELECT COUNT(*) FROM tasks
+            WHERE due_date IS NOT NULL
+            AND CAST(due_date AS date) = CAST(GETDATE() AS date)";
+
     $stmt = $conn->prepare($sql);
-    $stmt->execute($data);
+    $stmt->execute();
+    return $stmt->fetchColumn();
 }
 
 
-function update_task_status($conn, $data) {
-    $sql = "UPDATE tasks SET status = ? WHERE id = ?";
+// =======================================================
+// OVERDUE TASKS
+// =======================================================
+function count_tasks_overdue($conn) {
+    $sql = "SELECT COUNT(*) FROM tasks
+            WHERE due_date IS NOT NULL
+            AND status <> 'completed'
+            AND CAST(due_date AS date) < CAST(GETDATE() AS date)";
+
     $stmt = $conn->prepare($sql);
-    $stmt->execute($data);
+    $stmt->execute();
+    return $stmt->fetchColumn();
 }
 
 
-function update_task_status_and_file($conn, $id, $status, $file_path) {
-    $sql = "UPDATE tasks SET status = ?, file_path = ? WHERE id = ?";
+// =======================================================
+// NO DEADLINE
+// =======================================================
+function count_tasks_no_deadline($conn) {
+    $sql = "SELECT COUNT(*) FROM tasks WHERE due_date IS NULL";
     $stmt = $conn->prepare($sql);
-    $stmt->execute([$status, $file_path, $id]);
+    $stmt->execute();
+    return $stmt->fetchColumn();
 }
 
 
-function delete_task($conn, $data) {
-    $sql = "DELETE FROM tasks WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute($data);
-}
-
-
+// =======================================================
+// MY TASKS
+// =======================================================
 function count_my_tasks($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ?";
     $stmt = $conn->prepare($sql);
@@ -135,29 +157,39 @@ function count_my_tasks($conn, $id) {
 }
 
 
+// =======================================================
+// MY OVERDUE
+// =======================================================
 function count_my_tasks_overdue($conn, $id) {
-    $sql = "SELECT COUNT(*) FROM tasks 
+    $sql = "SELECT COUNT(*) FROM tasks
             WHERE assigned_to = ?
-            AND due_date IS NOT NULL 
-            AND due_date != '0000-00-00'
-            AND due_date < CURDATE() 
-            AND status != 'completed'";
+            AND due_date IS NOT NULL
+            AND status <> 'completed'
+            AND CAST(due_date AS date) < CAST(GETDATE() AS date)";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
 }
 
 
+// =======================================================
+// MY NO DEADLINE
+// =======================================================
 function count_my_tasks_no_deadline($conn, $id) {
-    $sql = "SELECT COUNT(*) FROM tasks 
-            WHERE assigned_to = ? 
-            AND (due_date IS NULL OR due_date = '0000-00-00')";
+    $sql = "SELECT COUNT(*) FROM tasks
+            WHERE assigned_to = ?
+            AND due_date IS NULL";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
 }
 
 
+// =======================================================
+// STATUS COUNTS (ADMIN)
+// =======================================================
 function count_pending_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'pending'";
     $stmt = $conn->prepare($sql);
@@ -179,25 +211,4 @@ function count_completed_tasks($conn) {
     return $stmt->fetchColumn();
 }
 
-
-function count_my_pending_tasks($conn, $id) {
-    $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ? AND status = 'pending'";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$id]);
-    return $stmt->fetchColumn();
-}
-
-function count_my_in_progress_tasks($conn, $id) {
-    $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ? AND status = 'in_progress'";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$id]);
-    return $stmt->fetchColumn();
-}
-
-function count_my_completed_tasks($conn, $id) {
-    $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ? AND status = 'completed'";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$id]);
-    return $stmt->fetchColumn();
-}
 ?>

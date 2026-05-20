@@ -1,10 +1,8 @@
 <?php 
 
-// 🔌 ALWAYS load DB connection first
 include_once "DB_connection.php";
 include_once "app/Model/Notification.php";
 
-// 🧠 Safely get notifications
 if (isset($_SESSION['id']) && isset($conn)) {
     $header_notifications = get_all_my_notifications($conn, $_SESSION['id']);
 } else {
@@ -15,23 +13,18 @@ if (isset($_SESSION['id']) && isset($conn)) {
 <header class="header">
    <h2 class="u-name logo-container">
 
-    <!-- MENU BUTTON FIRST -->
     <label for="checkbox">
-        <i id="navbtn" class="fa fa-bars" aria-hidden="true"></i>
+        <i id="navbtn" class="fa fa-bars"></i>
     </label>
 
-    <!-- LOGO -->
-    <img src="img/TechNova_logo.png" 
-         alt="TechNova Logo" 
-         class="nav-logo">
+    <img src="img/TechNova_logo.png" class="nav-logo">
 
-    <!-- TEXT -->
-    <span class="logo-text">
-        Tech<b>Nova</b>
-    </span>
-    </h2>
+    <span class="logo-text">Tech<b>Nova</b></span>
+
+   </h2>
+
     <span class="notification" id="notificationBtn">
-        <i class="fa fa-bell" aria-hidden="true"></i>
+        <i class="fa fa-bell"></i>
         <span id="notificationNum"></span>
     </span>
 </header>
@@ -40,7 +33,7 @@ if (isset($_SESSION['id']) && isset($conn)) {
     <ul>
 
         <?php if (!empty($header_notifications)) { ?>
-            
+
             <?php foreach ($header_notifications as $notif) { ?>
 
                 <li class="notif-card <?= $notif['is_read'] == 0 ? 'notif-unread' : '' ?>">
@@ -50,21 +43,22 @@ if (isset($_SESSION['id']) && isset($conn)) {
                         <div class="notif-top">
 
                             <div class="notif-type">
-
                                 <i class="fa fa-circle"></i>
-
-                                <?= htmlspecialchars($notif['type']) ?>
-
+                                <?= htmlspecialchars($notif['type'] ?? '') ?>
                             </div>
 
                             <div class="notif-date">
-                                <?= $notif['date'] ?>
+                                <?php
+                                    echo !empty($notif['created_at'])
+                                        ? date("M d, Y", strtotime($notif['created_at']))
+                                        : "No date";
+                                ?>
                             </div>
 
                         </div>
 
                         <div class="notif-message">
-                            <?= htmlspecialchars($notif['message']) ?>
+                            <?= htmlspecialchars($notif['message'] ?? '') ?>
                         </div>
 
                     </a>
@@ -85,33 +79,20 @@ if (isset($_SESSION['id']) && isset($conn)) {
 </div>
 
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-<script type="text/javascript">
-    // Dropdown toggle logic
-    let openNotification = false;
+<script>
+let openNotification = false;
 
-    const notification = () => {
-        let notificationBar = document.querySelector("#notificationBar");
+document.querySelector("#notificationBtn")?.addEventListener("click", () => {
+    let bar = document.querySelector("#notificationBar");
+    openNotification = !openNotification;
+    bar.classList.toggle("open-notification", openNotification);
+});
 
-        if (openNotification) {
-            notificationBar.classList.remove('open-notification');
-            openNotification = false;
-        } else {
-            notificationBar.classList.add('open-notification');
-            openNotification = true;
-        }
-    }
+$(document).ready(function () {
+    $("#notificationNum").load("app/notification-count.php");
 
-    let notificationBtn = document.querySelector("#notificationBtn");
-    if (notificationBtn) {
-        notificationBtn.addEventListener("click", notification);
-    }
-
-    // AJAX notification count
-    $(document).ready(function () {
+    setInterval(function () {
         $("#notificationNum").load("app/notification-count.php");
-
-        setInterval(function () {
-            $("#notificationNum").load("app/notification-count.php");
-        }, 3000);
-    });
+    }, 3000);
+});
 </script>
