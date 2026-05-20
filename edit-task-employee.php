@@ -37,104 +37,206 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     <div class="body">
         <?php include "inc/nav.php" ?>
 
-        <section class="section-1">
+        <section class="section-1 edit-task-page">
 
-            <h4 class="title">
-                Edit Task 
-                <a href="my_task.php">Tasks</a>
-            </h4>
+           <div class="edit-task-container">
 
-            <form class="form-1" method="POST" action="app/update-task-employee.php" enctype="multipart/form-data">
+    <!-- HEADER -->
 
-                <?php if (isset($_GET['error'])) { ?> 
-                    <div class="danger">
-                        <?= stripslashes($_GET['error']); ?>
+    <div class="edit-task-header">
+
+        <div>
+            <h1>Edit Task</h1>
+            <p>Update task progress, upload files, and manage status.</p>
+        </div>
+
+        <a href="my_task.php" class="back-task-btn">
+            <i class="fa fa-arrow-left"></i>
+            Back to Tasks
+        </a>
+
+    </div>
+
+    <!-- CARD -->
+
+    <div class="edit-task-card">
+
+        <form class="modern-edit-form"
+              method="POST"
+              action="app/update-task-employee.php"
+              enctype="multipart/form-data">
+
+            <?php if (isset($_GET['error'])) { ?> 
+                <div class="danger">
+                    <?= stripslashes($_GET['error']); ?>
+                </div>
+            <?php } ?>
+
+            <?php if (isset($_GET['success'])) { ?> 
+                <div class="success">
+                    <?= stripslashes($_GET['success']); ?>
+                </div>
+            <?php } ?>
+
+            <!-- TASK INFO -->
+
+            <div class="task-preview-box">
+
+                <div class="task-preview-item">
+                    <label>Task Title</label>
+                    <div class="preview-content">
+                        <?= htmlspecialchars($task['title']) ?>
                     </div>
-                <?php } ?>
-
-                <?php if (isset($_GET['success'])) { ?> 
-                    <div class="success">
-                        <?= stripslashes($_GET['success']); ?>
-                    </div>
-                <?php } ?>
-
-                <!-- TITLE -->
-                <div class="input-holder">
-                    <p><b>Title:</b> <?=$task['title']?></p>
                 </div>
 
-                <!-- DESCRIPTION -->
-                <div class="input-holder">
-                    <p><b>Description:</b> <?=$task['description']?></p>
-                </div><br>
-
-                <!-- FILE REMOVE FLAG -->
-                <input type="hidden" name="remove_file_flag" id="remove_file_flag" value="0">
-
-                <!-- CURRENT FILE -->
-                <div class="input-holder">
-                    <label><b>Current Attached File:</b></label>
-
-                    <?php if (!empty($task['file_path'])) { ?>
-                        <p id="current-file-display" style="margin-top:5px;margin-bottom:15px;">
-                            <a href="<?= htmlspecialchars($task['file_path']) ?>" target="_blank" style="color:#17a2b8;font-weight:bold;">
-                                <i class="fa fa-file"></i> View/Download File
-                            </a>
-                        </p>
-                    <?php } else { ?>
-                        <p style="font-style:italic;color:#888;">No file attached yet.</p>
-                    <?php } ?>
+                <div class="task-preview-item">
+                    <label>Description</label>
+                    <div class="preview-content description-box">
+                        <?= htmlspecialchars($task['description']) ?>
+                    </div>
                 </div>
 
-                <!-- UPLOAD FILE -->
-                <div class="input-holder">
-                    <label><b>Upload New File</b></label><br>
+            </div>
 
-                    <input type="file" name="task_file" id="task_file" style="display:none;">
+            <!-- FILE FLAG -->
 
-                    <label for="task_file" class="edit-btn" style="cursor:pointer;">
+            <input type="hidden"
+                   name="remove_file_flag"
+                   id="remove_file_flag"
+                   value="0">
+
+            <!-- FILE AREA -->
+
+            <div class="upload-card">
+
+                <div class="upload-top">
+                    <h3>Attached File</h3>
+                </div>
+
+                <?php if (!empty($task['file_path'])) { ?>
+
+                    <div id="current-file-display" class="current-file-box">
+
+                        <a href="<?= htmlspecialchars($task['file_path']) ?>"
+                           target="_blank">
+
+                            <i class="fa fa-file"></i>
+
+                            View / Download Current File
+
+                        </a>
+
+                    </div>
+
+                <?php } else { ?>
+
+                    <div class="empty-file">
+                        No file attached yet.
+                    </div>
+
+                <?php } ?>
+
+                <!-- HIDDEN INPUT -->
+
+                <input type="file"
+                       name="task_file"
+                       id="task_file"
+                       style="display:none;">
+
+                <!-- BUTTONS -->
+
+                <div class="upload-actions">
+
+                    <label for="task_file" class="upload-btn">
+
+                        <i class="fa fa-upload"></i>
+
                         Choose File
+
                     </label>
 
-                    <button type="button" id="remove-file" class="edit-btn" style="background:#dc3545;">
+                    <button type="button"
+                            id="remove-file"
+                            class="remove-btn">
+
+                        <i class="fa fa-trash"></i>
+
                         Remove File
+
                     </button>
 
-                    <span id="file-name" style="margin-left:10px;font-style:italic;">No file chosen</span>
-                </div><br>
+                </div>
 
-                <!-- STATUS BUTTONS -->
-                <div class="input-holder">
-                    <label><b>Choose Status for this Task</b></label>
+                <div id="file-name" class="selected-file">
+                    No file chosen
+                </div>
 
-                    <div class="status-buttons">
+            </div>
 
-                        <button type="button" data-value="pending"
-                            class="<?= ($task['status'] == 'pending') ? 'active' : '' ?>">
-                            Pending
-                        </button>
+            <!-- STATUS -->
 
-                        <button type="button" data-value="in_progress"
-                            class="<?= ($task['status'] == 'in_progress') ? 'active' : '' ?>">
-                            In Progress
-                        </button>
+            <div class="status-card">
 
-                        <button type="button" data-value="completed"
-                            class="<?= ($task['status'] == 'completed') ? 'active' : '' ?>">
-                            Completed
-                        </button>
+                <label class="status-label">
+                    Task Status
+                </label>
 
-                    </div>
+                <div class="status-buttons">
 
-                    <input type="hidden" name="status" id="statusInput" value="<?= $task['status'] ?>">
-                </div><br>
+                    <button type="button"
+                        data-value="pending"
+                        class="<?= ($task['status'] == 'pending') ? 'active' : '' ?>">
 
-                <!-- TASK ID -->
-                <input type="hidden" name="id" value="<?= $task['id'] ?>">
+                        Pending
 
-                <button class="edit-btn" type="submit">Update</button>
+                    </button>
 
-            </form>
+                    <button type="button"
+                        data-value="in_progress"
+                        class="<?= ($task['status'] == 'in_progress') ? 'active' : '' ?>">
+
+                        In Progress
+
+                    </button>
+
+                    <button type="button"
+                        data-value="completed"
+                        class="<?= ($task['status'] == 'completed') ? 'active' : '' ?>">
+
+                        Completed
+
+                    </button>
+
+                </div>
+
+                <input type="hidden"
+                       name="status"
+                       id="statusInput"
+                       value="<?= $task['status'] ?>">
+
+            </div>
+
+            <!-- TASK ID -->
+
+            <input type="hidden"
+                   name="id"
+                   value="<?= $task['id'] ?>">
+
+            <!-- SUBMIT -->
+
+            <button class="update-task-btn" type="submit">
+
+                <i class="fa fa-save"></i>
+
+                Update Task
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
         </section>
     </div>
 

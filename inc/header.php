@@ -38,27 +38,49 @@ if (isset($_SESSION['id']) && isset($conn)) {
 
 <div class="notification-bar" id="notificationBar">
     <ul>
+
         <?php if (!empty($header_notifications)) { ?>
             
             <?php foreach ($header_notifications as $notif) { ?>
-                <li>
-                    <a href="app/notifications-read.php?notification_id=<?= $notif['id'] ?>">
-                        
-                        <?php if ($notif['is_read'] == 0) { ?>
-                            <mark><?= htmlspecialchars($notif['type']) ?>:</mark> 
-                        <?php } else { ?>
-                            <span><?= htmlspecialchars($notif['type']) ?>:</span>
-                        <?php } ?>
 
-                        <?= htmlspecialchars($notif['message']) ?>
-                        &nbsp;&nbsp;<small><?= $notif['date'] ?></small>
+                <li class="notif-card <?= $notif['is_read'] == 0 ? 'notif-unread' : '' ?>">
+
+                    <a href="app/notifications-read.php?notification_id=<?= $notif['id'] ?>">
+
+                        <div class="notif-top">
+
+                            <div class="notif-type">
+
+                                <i class="fa fa-circle"></i>
+
+                                <?= htmlspecialchars($notif['type']) ?>
+
+                            </div>
+
+                            <div class="notif-date">
+                                <?= $notif['date'] ?>
+                            </div>
+
+                        </div>
+
+                        <div class="notif-message">
+                            <?= htmlspecialchars($notif['message']) ?>
+                        </div>
+
                     </a>
+
                 </li>
+
             <?php } ?>
 
         <?php } else { ?>
-            <li><a href="#">No new notifications</a></li>
+
+            <li class="notification-empty">
+                No new notifications
+            </li>
+
         <?php } ?>
+
     </ul>
 </div>
 

@@ -20,7 +20,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
     <div class="body">
         <?php include "inc/nav.php"; ?>
 
-        <section class="section-1">
+        <section class="section-1 notifications-page">
             <h4 class="title">All Notifications</h4>
 
             <?php if (isset($_GET['success'])) { ?> 
@@ -54,16 +54,16 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
                         <!-- PRIORITY (from message text) -->
                         <td>
-                            <?php
-                                if (strpos($notif['message'], 'High') !== false) {
-                                    echo "🔴 High";
-                                } elseif (strpos($notif['message'], 'Medium') !== false) {
-                                    echo "🟡 Medium";
-                                } else {
-                                    echo "🟢 Low";
-                                }
+                        <?php
+                            if (strpos($notif['message'], 'High') !== false) {
+                            echo "<span class='priority-high'>🔴 High</span>";
+                            } elseif (strpos($notif['message'], 'Medium') !== false) {
+                            echo "<span class='priority-medium'>🟡 Medium</span>";
+                            } else {
+                            echo "<span class='priority-low'>🟢 Low</span>";
+                            }
                             ?>
-                        </td>
+                            </td>
 
                         <?php if ($_SESSION['role'] === 'employee') { ?>
                             <td><?= htmlspecialchars($notif['type']) ?></td>

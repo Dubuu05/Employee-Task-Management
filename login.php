@@ -61,7 +61,7 @@
             <?php } ?>
 
             <div class="mb-3">
-                <label class="form-label">User name</label>
+                <label class="form-label">Username</label>
                 <input type="text" class="form-control" name="user_name">
             </div>
 
