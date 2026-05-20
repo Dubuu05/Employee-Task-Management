@@ -23,35 +23,45 @@ if (isset($_POST['user_name']) && isset($_POST['password'])) {
         header("Location: ../login.php?error=" . urlencode($em));
         exit();
     } else {
+
         $sql = "SELECT * FROM users WHERE username = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$user_name]);
 
         if ($stmt->rowCount() == 1) {
             $user = $stmt->fetch();
+
             $usernameDb = $user['username'];
             $passwordDb = $user['password'];
             $role = $user['role'];
             $id = $user['id'];
 
             if ($user_name === $usernameDb && password_verify($password, $passwordDb)) {
-                // Set session for both admin and employee
+
+                // ✅ SESSION SETUP (FIXED)
                 $_SESSION['role'] = $role;
                 $_SESSION['id'] = $id;
                 $_SESSION['username'] = $usernameDb;
+
+                // 🔥 FIX: FULL NAME SUPPORT (no more "An employee")
+                $_SESSION['full_name'] = $user['full_name'] ?? $usernameDb;
+
                 header("Location: ../index.php");
                 exit();
+
             } else {
                 $em = "Incorrect username or password!";
                 header("Location: ../login.php?error=" . urlencode($em));
                 exit();
             }
+
         } else {
             $em = "Incorrect username or password!";
             header("Location: ../login.php?error=" . urlencode($em));
             exit();
         }
     }
+
 } else {
     $em = "Unknown error occurred!";
     header("Location: ../login.php?error=" . urlencode($em));
