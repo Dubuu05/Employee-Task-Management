@@ -14,39 +14,63 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])&& $_SESSION['role'] == 'a
     <?php include "inc/header.php" ?>
     <div class="body">
         <?php include "inc/nav.php" ?>
-        <section class="section-1">
-            <h4 class= "title">Add Users <a href="user.php">Users</a></h4>
-            <form class= "form-1"
-            method="POST"
-            action="app/add-user.php">
-            <?php if (isset($_GET['error'])) { ?> 
-        <div class="danger" role="alert">
-            <?php echo stripslashes($_GET['error']); ?>
-        </div>
-        <?php } 
-            ?>
-        <?php if (isset($_GET['success'])) { ?> 
-        <div class="success" role="alert">
-            <?php echo stripslashes($_GET['success']); ?>
-        </div>
-        <?php }  ?>
-                <div class="input-holder">
-                    <label>Full Name</label>
-                    <input type="text" name="full_name" class="input-1" placeholder="Full Name"><br>
-                </div>
-                <div class="input-holder">
-                    <label>Username</label>
-                    <input type="text" name="user_name" class="input-1" placeholder="Username"><br>
+       <section class="section-1">
 
-                </div><div class="input-holder">
-                    <label>Password</label>
-                    <input type="text" name="password" class="input-1" placeholder="Password"><br>
+    <div class="eu-container">
+
+        <div class="eu-header">
+
+            <div>
+                <h1>Add User</h1>
+                <p>Create a new account</p>
+            </div>
+
+            <div class="eu-icon">
+                <i class="fa fa-user-plus"></i>
+            </div>
+
+        </div>
+
+        <div class="eu-card">
+
+            <form method="POST" action="app/add-user.php">
+
+                <?php if (isset($_GET['error'])) { ?>
+                    <div class="eu-danger">
+                        <?php echo stripslashes($_GET['error']); ?>
+                    </div>
+                <?php } ?>
+
+                <?php if (isset($_GET['success'])) { ?>
+                    <div class="eu-success">
+                        <?php echo stripslashes($_GET['success']); ?>
+                    </div>
+                <?php } ?>
+
+                <div class="eu-group">
+                    <label>Full Name</label>
+                    <input type="text" name="full_name" class="eu-input" placeholder="Enter full name">
                 </div>
-                <button class="edit-btn">Add</button>
-       </form>
-            
-        </section>
+
+                <div class="eu-group">
+                    <label>Username</label>
+                    <input type="text" name="user_name" class="eu-input" placeholder="Enter username">
+                </div>
+
+                <div class="eu-group">
+                    <label>Password</label>
+                    <input type="password" name="password" class="eu-input" placeholder="Enter password">
+                </div>
+
+                <button class="eu-btn">Add User</button>
+
+            </form>
+
+        </div>
+
     </div>
+
+</section>
     <script type="text/javascript">
         var active = document.querySelector("#navlist li:nth-child(2)");
         active.classList.add("active");
