@@ -1,6 +1,6 @@
 <?php 
 $server = "localhost";
-$database = "MigrationDB";
+$database = "EmployeeTaskDB";
 
 try {
     $conn = new PDO("sqlsrv:Server=$server;Database=$database");
