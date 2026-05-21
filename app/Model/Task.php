@@ -14,10 +14,39 @@ function insert_task($conn, $data) {
 
 
 // =======================
+// UPDATE TASK (✔ FIXED - ADDED)
+// =======================
+function update_task($conn, $data) {
+    $sql = "UPDATE tasks 
+            SET title = ?, 
+                description = ?, 
+                assigned_to = ?, 
+                due_date = ?, 
+                priority = ?
+            WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    return $stmt->execute($data);
+}
+
+
+// =======================
+// UPDATE STATUS
+// =======================
+function update_task_status($conn, $data) {
+    $sql = "UPDATE tasks SET status = ? WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    return $stmt->execute($data);
+}
+
+
+// =======================
 // GET ALL TASKS
 // =======================
 function get_all_tasks($conn) {
     $sql = "SELECT * FROM tasks ORDER BY id DESC";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -25,12 +54,14 @@ function get_all_tasks($conn) {
 
 
 // =======================
-// UPDATE STATUS (FIX ERROR MO)
+// GET TASK BY ID
 // =======================
-function update_task_status($conn, $data) {
-    $sql = "UPDATE tasks SET status = ? WHERE id = ?";
+function get_task_by_id($conn, $id) {
+    $sql = "SELECT * FROM tasks WHERE id = ?";
+
     $stmt = $conn->prepare($sql);
-    return $stmt->execute($data);
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 
@@ -39,65 +70,50 @@ function update_task_status($conn, $data) {
 // =======================
 function delete_task($conn, $data) {
     $sql = "DELETE FROM tasks WHERE id = ?";
+
     $stmt = $conn->prepare($sql);
     return $stmt->execute($data);
 }
 
 
 // =======================
-// TASK BY ID (FIX ERROR MO)
-// =======================
-function get_task_by_id($conn, $id) {
-    $sql = "SELECT * FROM tasks WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-
-// =======================
-// DUE TODAY
+// COUNTS
 // =======================
 function count_tasks_due_today($conn) {
     $sql = "SELECT COUNT(*) FROM tasks
             WHERE due_date IS NOT NULL
             AND CAST(due_date AS date) = CAST(GETDATE() AS date)";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchColumn();
 }
 
 
-// =======================
-// OVERDUE (FIXED MSSQL SAFE)
-// =======================
 function count_tasks_overdue($conn) {
     $sql = "SELECT COUNT(*) FROM tasks
             WHERE due_date IS NOT NULL
             AND status <> 'completed'
             AND CAST(due_date AS date) < CAST(GETDATE() AS date)";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchColumn();
 }
 
 
-// =======================
-// NO DEADLINE
-// =======================
 function count_tasks_no_deadline($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE due_date IS NULL";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchColumn();
 }
 
 
-// =======================
-// ALL TASK COUNT
-// =======================
 function count_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchColumn();
@@ -105,38 +121,35 @@ function count_tasks($conn) {
 
 
 // =======================
-// USER TASKS
+// USER TASK COUNTS
 // =======================
 function count_my_tasks($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ?";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
 }
 
 
-// =======================
-// USER OVERDUE
-// =======================
 function count_my_tasks_overdue($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks
             WHERE assigned_to = ?
             AND due_date IS NOT NULL
             AND status <> 'completed'
             AND CAST(due_date AS date) < CAST(GETDATE() AS date)";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
 }
 
 
-// =======================
-// USER NO DEADLINE
-// =======================
 function count_my_tasks_no_deadline($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks
             WHERE assigned_to = ?
             AND due_date IS NULL";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
@@ -148,20 +161,25 @@ function count_my_tasks_no_deadline($conn, $id) {
 // =======================
 function count_pending_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'pending'";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchColumn();
 }
+
 
 function count_in_progress_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'in_progress'";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchColumn();
 }
 
+
 function count_completed_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'completed'";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchColumn();
@@ -169,36 +187,43 @@ function count_completed_tasks($conn) {
 
 
 // =======================
-// TASK LISTS (FILTERS)
+// FILTERED LISTS
 // =======================
 function get_all_tasks_due_today($conn) {
     $sql = "SELECT * FROM tasks
             WHERE due_date IS NOT NULL
             AND CAST(due_date AS date) = CAST(GETDATE() AS date)";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 
 function get_all_tasks_overdue($conn) {
     $sql = "SELECT * FROM tasks
             WHERE due_date IS NOT NULL
             AND status <> 'completed'
             AND CAST(due_date AS date) < CAST(GETDATE() AS date)";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 
 function get_all_tasks_no_deadline($conn) {
     $sql = "SELECT * FROM tasks WHERE due_date IS NULL";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+
 function get_all_tasks_by_id($conn, $id) {
     $sql = "SELECT * FROM tasks WHERE assigned_to = ? ORDER BY id DESC";
+
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
