@@ -316,6 +316,8 @@ if (strtolower($task['status']) == 'completed') {
 
 <a href="delete-task.php?id=<?= $task['id'] ?>" class="delete-btn">
 <i class="fa fa-trash"></i> Delete</a>
+<a href="return-task-form.php?id=<?= $task['id'] ?>" class="delete-btn">
+<i class="fa fa-trash"></i> Return</a>
 </td>
 
 </tr>
