@@ -64,5 +64,15 @@ function count_users($conn) {
 
     return $stmt->fetchColumn();
 }
+function update_user_without_password($conn, $data) {
 
+    $sql = "UPDATE users 
+            SET full_name = ?, 
+                username = ?
+            WHERE id = ? 
+            AND role = ?";
+
+    $stmt = $conn->prepare($sql);
+    return $stmt->execute($data);
+}
 ?>
