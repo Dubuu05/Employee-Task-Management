@@ -14,7 +14,7 @@ function insert_task($conn, $data) {
 
 
 // =======================
-// UPDATE TASK (✔ FIXED - ADDED)
+// UPDATE TASK DETAILS
 // =======================
 function update_task($conn, $data) {
     $sql = "UPDATE tasks 
@@ -31,13 +31,27 @@ function update_task($conn, $data) {
 
 
 // =======================
-// UPDATE STATUS
+// UPDATE STATUS ONLY
 // =======================
 function update_task_status($conn, $data) {
     $sql = "UPDATE tasks SET status = ? WHERE id = ?";
 
     $stmt = $conn->prepare($sql);
     return $stmt->execute($data);
+}
+
+
+// =======================
+// ✅ UPDATE STATUS + FILE (FIXED MISSING FUNCTION)
+// =======================
+function update_task_status_and_file($conn, $id, $status, $file_path) {
+    $sql = "UPDATE tasks 
+            SET status = ?, 
+                file_path = ? 
+            WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    return $stmt->execute([$status, $file_path, $id]);
 }
 
 
