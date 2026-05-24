@@ -4,32 +4,34 @@ function get_all_users($conn) {
     $sql = "SELECT * FROM users WHERE role = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute(["employee"]);
-
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 
 /* =========================
-   INSERT USER (SAFE VERSION)
-   ========================= */
+   INSERT USER
+========================= */
 function insert_user($conn, $data) {
-    try {
-        $sql = "INSERT INTO users (full_name, username, password, role)
-                VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO users (full_name, username, password, role)
+            VALUES (?, ?, ?, ?)";
 
-        $stmt = $conn->prepare($sql);
-        return $stmt->execute($data);
-
-    } catch (PDOException $e) {
-        return false;
-    }
+    $stmt = $conn->prepare($sql);
+    return $stmt->execute($data);
 }
 
 
-/* UPDATE USER */
+/* =========================
+   UPDATE USER (WITH OPTIONAL PASSWORD)
+   ✔ FIXED VERSION (NO NEED SEPARATE FUNCTION)
+========================= */
 function update_user($conn, $data) {
+
+    // password is optional using COALESCE
     $sql = "UPDATE users
-            SET full_name = ?, username = ?, password = ?, role = ?
+            SET full_name = ?,
+                username = ?,
+                password = COALESCE(?, password),
+                role = ?
             WHERE id = ? AND role = ?";
 
     $stmt = $conn->prepare($sql);
@@ -68,14 +70,11 @@ function count_users($conn) {
     $sql = "SELECT COUNT(*) FROM users WHERE role = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute(["employee"]);
-
     return $stmt->fetchColumn();
 }
 
 
-/* =========================
-   CHECK DUPLICATE USERNAME
-   ========================= */
+/* CHECK DUPLICATE USERNAME */
 function account_exists($conn, $username) {
     $sql = "SELECT COUNT(*) FROM users WHERE username = ?";
     $stmt = $conn->prepare($sql);

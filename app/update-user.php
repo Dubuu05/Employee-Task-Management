@@ -14,81 +14,60 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
         include "Model/User.php";
 
         function validate_input($data) {
-            $data = trim($data);
-            $data = stripslashes($data);
-            $data = htmlspecialchars($data);
-            return $data;
+            return htmlspecialchars(stripslashes(trim($data)));
         }
 
         $user_name = validate_input($_POST['user_name']);
-        $password  = validate_input($_POST['password']);
+        $password  = isset($_POST['password']) ? validate_input($_POST['password']) : "";
         $full_name = validate_input($_POST['full_name']);
         $id        = validate_input($_POST['id']);
 
-        // VALIDATIONS
         if (empty($user_name)) {
-
             $em = "User name is required!";
             header("Location: ../edit-user.php?error=$em&id=$id");
             exit();
 
         } else if (empty($full_name)) {
-
             $em = "Full name is required!";
             header("Location: ../edit-user.php?error=$em&id=$id");
             exit();
+        }
+
+        // =========================
+        // IF PASSWORD IS NOT EMPTY
+        // =========================
+        if (!empty($password)) {
+
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         } else {
 
-            // =========================
-            // IF PASSWORD IS FILLED
-            // =========================
-            if (!empty($password)) {
-
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-                $data = array(
-                    $full_name,
-                    $user_name,
-                    $hashed_password,
-                    "employee",
-                    $id,
-                    "employee"
-                );
-
-                update_user($conn, $data);
-
-            } else {
-
-                // =========================
-                // UPDATE WITHOUT PASSWORD
-                // =========================
-                $data = array(
-                    $full_name,
-                    $user_name,
-                    $id,
-                    "employee"
-                );
-
-                update_user_without_password($conn, $data);
-            }
-
-            $sm = "User updated successfully!";
-            header("Location: ../edit-user.php?success=$sm&id=$id");
-            exit();
+            // keep old password
+            $hashed_password = null;
         }
 
-    } else {
+        $data = array(
+            $full_name,
+            $user_name,
+            $hashed_password,
+            "employee",
+            $id,
+            "employee"
+        );
 
-        $em = "Unknown error occurred!";
-        header("Location: ../edit-user.php?error=$em");
+        update_user($conn, $data);
+
+        $sm = "User updated successfully!";
+        header("Location: ../edit-user.php?success=$sm&id=$id");
+        exit();
+
+    } else {
+        header("Location: ../edit-user.php?error=Unknown error");
         exit();
     }
 
 } else {
-
-    $em = "First login";
-    header("Location: ../login.php?error=$em");
+    header("Location: ../login.php?error=First login");
     exit();
 }
 ?>
