@@ -58,19 +58,21 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
                     <td><?= htmlspecialchars($notif['message'] ?? '') ?></td>
 
                     <!-- PRIORITY -->
-                    <td>
-                        <?php
-                        $msg = $notif['message'] ?? '';
+                   <td>
+<?php
+$priority = $notif['priority'] ?? 'Low';
 
-                        if (strpos($msg, 'High') !== false) {
-                            echo "<span class='priority-high'>🔴 High</span>";
-                        } elseif (strpos($msg, 'Medium') !== false) {
-                            echo "<span class='priority-medium'>🟡 Medium</span>";
-                        } else {
-                            echo "<span class='priority-low'>🟢 Low</span>";
-                        }
-                        ?>
-                    </td>
+if ($priority === 'High') {
+    echo "<span class='priority-high'>🔴 High</span>";
+}
+elseif ($priority === 'Medium') {
+    echo "<span class='priority-medium'>🟡 Medium</span>";
+}
+else {
+    echo "<span class='priority-low'>🟢 Low</span>";
+}
+?>
+</td>
 
                     <!-- TYPE (employee only) -->
                     <?php if ($_SESSION['role'] === 'employee') { ?>

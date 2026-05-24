@@ -1,9 +1,14 @@
 <?php
 
 function get_all_my_notifications($conn, $id) {
-    $sql = "SELECT * FROM notifications 
-            WHERE recipient = ? 
-            ORDER BY id DESC";
+    $sql = "SELECT 
+                n.*,
+                t.priority
+            FROM notifications n
+            LEFT JOIN tasks t 
+                ON n.message LIKE '%' + t.title + '%'
+            WHERE n.recipient = ?
+            ORDER BY n.id DESC";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute([$id]);
@@ -39,3 +44,4 @@ function notification_make_read($conn, $recipient_id, $notification_id){
     $stmt = $conn->prepare($sql);
     return $stmt->execute([$notification_id, $recipient_id]);
 }
+?>
