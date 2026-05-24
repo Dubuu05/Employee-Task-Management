@@ -728,14 +728,6 @@ padding-left: 10px;
     }
 }
 
-
-
-
-/* TASK PHP PAGE */
-/* =========================================================
-   FUTURISTIC GLASS TASK DASHBOARD
-========================================================= */
-
 body{
     margin:0;
     padding:0;
@@ -1711,11 +1703,6 @@ select.modern-input{
     box-shadow:0 0 12px rgba(107,114,128,0.35);
 }
 
-
-/* =========================================
-   FUTURISTIC NOTIFICATION TABLE
-========================================= */
-
 .notification-page .main-table{
 
     width:100%;
@@ -1844,9 +1831,6 @@ select.modern-input{
 
     font-weight:700;
 }
-/* =========================================
-   FUTURISTIC NOTIFICATION TABLE
-========================================= */
 
 .notifications-page .main-table{
 
@@ -1996,9 +1980,6 @@ select.modern-input{
     font-weight:700;
 }
 
-/* =========================================
-   FUTURISTIC DROPDOWN NOTIFICATION
-========================================= */
 
 .notification-bar{
 
