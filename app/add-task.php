@@ -8,48 +8,25 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
         isset($_POST['description']) &&
         isset($_POST['assigned_to']) &&
         isset($_POST['due_date']) &&
-        isset($_POST['priority']) && 
-        $_SESSION['role'] == "admin"
+        isset($_POST['priority']) &&
+        $_SESSION['role'] == 'admin'
     ) {
 
         include "../DB_connection.php";
 
-        // 🔴 HIGH PRIORITY COUNT
-        function count_high_priority($conn, $user_id) {
-            $sql = "SELECT COUNT(*) as total 
-                    FROM tasks 
-                    WHERE assigned_to = ? 
-                    AND priority = 'High' 
+        function count_priority($conn, $user_id, $priority) {
+            $sql = "SELECT COUNT(*) as total
+                    FROM tasks
+                    WHERE assigned_to = ?
+                    AND priority = ?
                     AND status != 'Completed'";
-
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$user_id]);
-            $result = $stmt->fetch();
-
-            return $result['total'];
+            $stmt->execute([$user_id, $priority]);
+            return $stmt->fetch()['total'];
         }
 
-        // 🟠 MEDIUM PRIORITY COUNT
-        function count_medium_priority($conn, $user_id) {
-            $sql = "SELECT COUNT(*) as total 
-                    FROM tasks 
-                    WHERE assigned_to = ? 
-                    AND priority = 'Medium' 
-                    AND status != 'Completed'";
-
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$user_id]);
-            $result = $stmt->fetch();
-
-            return $result['total'];
-        }
-
-        // CLEAN INPUT
         function validate_input($data) {
-            $data = trim($data);
-            $data = stripslashes($data);
-            $data = htmlspecialchars($data);
-            return $data;
+            return htmlspecialchars(stripslashes(trim($data)));
         }
 
         $title = validate_input($_POST['title']);
@@ -58,81 +35,117 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
         $due_date = validate_input($_POST['due_date']);
         $priority = validate_input($_POST['priority']);
 
-        // VALIDATION
-        if (empty($title)) {
-
-            $em = "Title is required!";
-            header("Location: ../create_task.php?error=$em");
-            exit();
-
-        } else if (empty($description)) {
-
-            $em = "Description is required!";
-            header("Location: ../create_task.php?error=$em");
-            exit();
-
-        } else if ($assigned_to == 0) {
-
-            $em = "Select User required!";
-            header("Location: ../create_task.php?error=$em");
-            exit();
-
-        } else {
-
-            // 🔴 HIGH PRIORITY LIMIT (MAX 2)
-            if ($priority == "High") {
-
-                $count = count_high_priority($conn, $assigned_to);
-
-                if ($count >= 2) {
-                    $em = "This employee already has 2 High priority tasks.";
-                    header("Location: ../create_task.php?error=$em");
-                    exit();
-                }
-            }
-
-            // 🟠 MEDIUM PRIORITY LIMIT (MAX 8)
-            if ($priority == "Medium") {
-
-                $count = count_medium_priority($conn, $assigned_to);
-
-                if ($count >= 8) {
-                    $em = "This employee already has 8 Medium priority tasks.";
-                    header("Location: ../create_task.php?error=$em");
-                    exit();
-                }
-            }
-
-            include "Model/Task.php";
-            include "Model/Notification.php";
-
-            // INSERT TASK
-            $data = array($title, $description, $assigned_to, $due_date, $priority);
-            insert_task($conn, $data);
-
-            // NOTIFICATION
-            $notif_data = array(
-                "'$title' has been assigned to you. Please review and start working on it",
-                $assigned_to,
-                'New Task Assigned'
-            );
-
-            insert_notification($conn, $notif_data);
-
-            $em = "Task added successfully!";
-            header("Location: ../create_task.php?success=$em");
+        // BASIC VALIDATION
+        if (empty($title) || empty($description) || $assigned_to == 0) {
+            header("Location: ../create_task.php?error=Please complete all fields!");
             exit();
         }
 
-    } else { 
-        $em = "Unknown error occurred!";
-        header("Location: ../create_task.php?error=$em");
-        exit(); 
+        // COUNT TASKS
+        $highCount = count_priority($conn, $assigned_to, "High");
+        $mediumCount = count_priority($conn, $assigned_to, "Medium");
+        $lowCount = count_priority($conn, $assigned_to, "Low");
+
+        // =========================
+        // 🔥 RULE SET (STRICT STATE SYSTEM)
+        // =========================
+
+        // 🟢 5 LOW = BLOCK EVERYTHING EXCEPT LOW
+        if ($lowCount >= 5) {
+
+            if ($priority == "High" || $priority == "Medium") {
+                header("Location: ../create_task.php?error=Blocked: 5 Low priority limit reached.");
+                exit();
+            }
+        }
+
+        // 🔴 2 HIGH RULE STATE
+        if ($highCount >= 2) {
+
+            if ($priority == "High") {
+                header("Location: ../create_task.php?error=Max 2 High priority reached.");
+                exit();
+            }
+
+            if ($priority == "Medium" && $mediumCount >= 1) {
+                header("Location: ../create_task.php?error=Only 1 Medium allowed when 2 High exist.");
+                exit();
+            }
+
+            if ($priority == "Low" && $lowCount >= 1) {
+                header("Location: ../create_task.php?error=Only 1 Low allowed when 2 High exist.");
+                exit();
+            }
+        }
+
+        // 🟠 2 MEDIUM RULE STATE
+        if ($mediumCount >= 2) {
+
+            if ($priority == "High" || $priority == "Medium") {
+                header("Location: ../create_task.php?error=Blocked: Medium limit reached (only Low allowed).");
+                exit();
+            }
+
+            if ($priority == "Low" && $lowCount >= 2) {
+                header("Location: ../create_task.php?error=Max 2 Low allowed when 2 Medium exist.");
+                exit();
+            }
+        }
+
+        // =========================
+        // DEADLINE RULES
+        // =========================
+
+        $today = strtotime(date('Y-m-d'));
+        $due = strtotime($due_date);
+
+        if ($priority == "Medium") {
+            $min = strtotime("+1 day", $today);
+            if ($due < $min) {
+                header("Location: ../create_task.php?error=Medium requires at least 1 day lead time.");
+                exit();
+            }
+        }
+
+        if ($priority == "Low") {
+            $min = strtotime("+2 days", $today);
+            if ($due < $min) {
+                header("Location: ../create_task.php?error=Low requires at least 2 days lead time.");
+                exit();
+            }
+        }
+
+        // =========================
+        // INSERT TASK
+        // =========================
+
+        include "Model/Task.php";
+        include "Model/Notification.php";
+
+        insert_task($conn, array(
+            $title,
+            $description,
+            $assigned_to,
+            $due_date,
+            $priority
+        ));
+
+        insert_notification($conn, array(
+            "$title has been assigned to you. Please review and start working on it",
+            $assigned_to,
+            'New Task Assigned'
+        ));
+
+        header("Location: ../create_task.php?success=Task added successfully!");
+        exit();
+
+    } else {
+        header("Location: ../create_task.php?error=Invalid request!");
+        exit();
     }
 
-} else { 
-    $em = "First login";
-    header("Location: ../create_task.php?error=$em");
-    exit(); 
+} else {
+    header("Location: ../create_task.php?error=First login");
+    exit();
 }
 ?>
