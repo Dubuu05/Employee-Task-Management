@@ -9,13 +9,20 @@ function get_all_users($conn) {
 }
 
 
-/* INSERT USER (FIXED - SINGLE VERSION ONLY) */
+/* =========================
+   INSERT USER (SAFE VERSION)
+   ========================= */
 function insert_user($conn, $data) {
-    $sql = "INSERT INTO users (full_name, username, password, role)
-            VALUES (?, ?, ?, ?)";
+    try {
+        $sql = "INSERT INTO users (full_name, username, password, role)
+                VALUES (?, ?, ?, ?)";
 
-    $stmt = $conn->prepare($sql);
-    return $stmt->execute($data);
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute($data);
+
+    } catch (PDOException $e) {
+        return false;
+    }
 }
 
 
@@ -64,15 +71,16 @@ function count_users($conn) {
 
     return $stmt->fetchColumn();
 }
-function update_user_without_password($conn, $data) {
 
-    $sql = "UPDATE users 
-            SET full_name = ?, 
-                username = ?
-            WHERE id = ? 
-            AND role = ?";
 
+/* =========================
+   CHECK DUPLICATE USERNAME
+   ========================= */
+function account_exists($conn, $username) {
+    $sql = "SELECT COUNT(*) FROM users WHERE username = ?";
     $stmt = $conn->prepare($sql);
-    return $stmt->execute($data);
+    $stmt->execute([$username]);
+
+    return $stmt->fetchColumn() > 0;
 }
 ?>

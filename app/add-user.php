@@ -43,10 +43,18 @@ if (
         exit();
     }
 
+    // =========================
+    // 🔴 DUPLICATE CHECK (FIXED)
+    // =========================
+    if (account_exists($conn, $user_name)) {
+        header("Location: ../add-user.php?error=Username already exists!");
+        exit();
+    }
+
     // hash password
     $password = password_hash($password, PASSWORD_DEFAULT);
 
-    // FIXED DATA ORDER (matches insert_user)
+    // FIXED DATA ORDER
     $data = [
         $full_name,
         $user_name,
@@ -54,13 +62,19 @@ if (
         "employee"
     ];
 
-    $result = insert_user($conn, $data);
+    try {
+        $result = insert_user($conn, $data);
 
-    if ($result) {
-        header("Location: ../add-user.php?success=User added successfully!");
-        exit();
-    } else {
-        header("Location: ../add-user.php?error=Failed to add user!");
+        if ($result) {
+            header("Location: ../add-user.php?success=User added successfully!");
+            exit();
+        } else {
+            header("Location: ../add-user.php?error=Failed to add user!");
+            exit();
+        }
+
+    } catch (PDOException $e) {
+        header("Location: ../add-user.php?error=Database error occurred!");
         exit();
     }
 
@@ -68,3 +82,4 @@ if (
     header("Location: ../add-user.php?error=Invalid request!");
     exit();
 }
+?>
