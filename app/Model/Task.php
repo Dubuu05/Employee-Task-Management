@@ -42,7 +42,7 @@ function update_task_status($conn, $data) {
 
 
 // =======================
-// ✅ UPDATE STATUS + FILE (FIXED MISSING FUNCTION)
+// UPDATE STATUS + FILE
 // =======================
 function update_task_status_and_file($conn, $id, $status, $file_path) {
     $sql = "UPDATE tasks 
@@ -91,7 +91,7 @@ function delete_task($conn, $data) {
 
 
 // =======================
-// COUNTS
+// COUNTS (ADMIN)
 // =======================
 function count_tasks_due_today($conn) {
     $sql = "SELECT COUNT(*) FROM tasks
@@ -102,7 +102,6 @@ function count_tasks_due_today($conn) {
     $stmt->execute();
     return $stmt->fetchColumn();
 }
-
 
 function count_tasks_overdue($conn) {
     $sql = "SELECT COUNT(*) FROM tasks
@@ -115,7 +114,6 @@ function count_tasks_overdue($conn) {
     return $stmt->fetchColumn();
 }
 
-
 function count_tasks_no_deadline($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE due_date IS NULL";
 
@@ -123,7 +121,6 @@ function count_tasks_no_deadline($conn) {
     $stmt->execute();
     return $stmt->fetchColumn();
 }
-
 
 function count_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks";
@@ -135,7 +132,7 @@ function count_tasks($conn) {
 
 
 // =======================
-// USER TASK COUNTS
+// USER TASK COUNTS (ALL TASKS)
 // =======================
 function count_my_tasks($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ?";
@@ -144,7 +141,6 @@ function count_my_tasks($conn, $id) {
     $stmt->execute([$id]);
     return $stmt->fetchColumn();
 }
-
 
 function count_my_tasks_overdue($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks
@@ -158,7 +154,6 @@ function count_my_tasks_overdue($conn, $id) {
     return $stmt->fetchColumn();
 }
 
-
 function count_my_tasks_no_deadline($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks
             WHERE assigned_to = ?
@@ -171,7 +166,38 @@ function count_my_tasks_no_deadline($conn, $id) {
 
 
 // =======================
-// STATUS COUNTS
+// USER STATUS COUNTS (FIXED)
+// =======================
+function count_my_pending_tasks($conn, $id) {
+    $sql = "SELECT COUNT(*) FROM tasks 
+            WHERE assigned_to = ? AND status = 'pending'";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$id]);
+    return $stmt->fetchColumn();
+}
+
+function count_my_in_progress_tasks($conn, $id) {
+    $sql = "SELECT COUNT(*) FROM tasks 
+            WHERE assigned_to = ? AND status = 'in_progress'";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$id]);
+    return $stmt->fetchColumn();
+}
+
+function count_my_completed_tasks($conn, $id) {
+    $sql = "SELECT COUNT(*) FROM tasks 
+            WHERE assigned_to = ? AND status = 'completed'";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$id]);
+    return $stmt->fetchColumn();
+}
+
+
+// =======================
+// STATUS COUNTS (ADMIN)
 // =======================
 function count_pending_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'pending'";
@@ -181,7 +207,6 @@ function count_pending_tasks($conn) {
     return $stmt->fetchColumn();
 }
 
-
 function count_in_progress_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'in_progress'";
 
@@ -189,7 +214,6 @@ function count_in_progress_tasks($conn) {
     $stmt->execute();
     return $stmt->fetchColumn();
 }
-
 
 function count_completed_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'completed'";
@@ -213,7 +237,6 @@ function get_all_tasks_due_today($conn) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-
 function get_all_tasks_overdue($conn) {
     $sql = "SELECT * FROM tasks
             WHERE due_date IS NOT NULL
@@ -225,7 +248,6 @@ function get_all_tasks_overdue($conn) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-
 function get_all_tasks_no_deadline($conn) {
     $sql = "SELECT * FROM tasks WHERE due_date IS NULL";
 
@@ -233,7 +255,6 @@ function get_all_tasks_no_deadline($conn) {
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
 
 function get_all_tasks_by_id($conn, $id) {
     $sql = "SELECT * FROM tasks WHERE assigned_to = ? ORDER BY id DESC";
