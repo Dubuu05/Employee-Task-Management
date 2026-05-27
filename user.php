@@ -41,9 +41,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
 <section class="section-1">
 
-    <!-- =========================================================
-         PAGE HEADER
-    ========================================================= -->
+ 
 
     <div class="page-header">
 
@@ -69,9 +67,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
     </div>
 
-    <!-- =========================================================
-         SUCCESS MESSAGE
-    ========================================================= -->
+   
 
     <?php if (isset($_GET['success'])) { ?>
 
@@ -85,9 +81,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
     <?php } ?>
 
-    <!-- =========================================================
-         USERS TABLE
-    ========================================================= -->
+   
 
     <?php if ($users != 0) { ?>
 
@@ -111,13 +105,13 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             <tr>
 
-                <!-- NUMBER -->
+          
 
                 <td>
                     <?= ++$i ?>
                 </td>
 
-                <!-- FULL NAME -->
+            
 
                 <td>
 
@@ -141,7 +135,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
                 </td>
 
-                <!-- USERNAME -->
 
                 <td>
 
@@ -149,7 +142,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
                 </td>
 
-                <!-- ROLE -->
+         
 
                 <td>
 
@@ -169,7 +162,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
                 </td>
 
-                <!-- ACTION -->
+           
 
                 <td>
 
@@ -207,9 +200,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
     <?php } else { ?>
 
-    <!-- =========================================================
-         EMPTY STATE
-    ========================================================= -->
+
 
     <div class="empty-state">
 

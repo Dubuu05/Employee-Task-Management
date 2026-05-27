@@ -46,11 +46,11 @@ if (
 
     <div class="profile-wrapper">
 
-        <!-- PROFILE CARD -->
+    
 
         <div class="table-container profile-card">
 
-            <!-- TITLE -->
+        
 
             <div class="profile-top">
 
@@ -68,7 +68,7 @@ if (
 
             </div>
 
-            <!-- TABLE -->
+    
 
             <table class="main-table">
 
@@ -84,7 +84,7 @@ if (
 
                 </tr>
 
-                <!-- FULL NAME -->
+          
 
                 <tr>
 
@@ -100,7 +100,7 @@ if (
 
                 </tr>
 
-                <!-- USERNAME -->
+      
 
                 <tr>
 
@@ -116,7 +116,7 @@ if (
 
                 </tr>
 
-                <!-- DATE JOINED -->
+        
 
                 <tr>
 
@@ -134,7 +134,7 @@ if (
 
             </table>
 
-            <!-- BUTTON -->
+   
 
             <div class="profile-actions">
 

@@ -54,10 +54,10 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
                 <tr>
                     <td><?= $i ?></td>
 
-                    <!-- MESSAGE -->
+                   
                     <td><?= htmlspecialchars($notif['message'] ?? '') ?></td>
 
-                    <!-- PRIORITY -->
+                  
                    <td>
 <?php
 $priority = $notif['priority'] ?? 'Low';
@@ -74,12 +74,11 @@ else {
 ?>
 </td>
 
-                    <!-- TYPE (employee only) -->
                     <?php if ($_SESSION['role'] === 'employee') { ?>
                         <td><?= htmlspecialchars($notif['type'] ?? '') ?></td>
                     <?php } ?>
 
-                    <!-- DATE FIXED -->
+              
                     <td>
                         <?php
                         if (!empty($notif['created_at'])) {

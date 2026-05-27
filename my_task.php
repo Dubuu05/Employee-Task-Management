@@ -37,13 +37,11 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
 <section class="section-1">
 
-    <!-- PAGE TITLE -->
 
     <h2 class="title-2">
         My Tasks
     </h2>
 
-    <!-- SUCCESS MESSAGE -->
 
     <?php if (isset($_GET['success'])) { ?>
 
@@ -55,7 +53,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
     <?php } ?>
 
-    <!-- TASK TABLE -->
+   
 
     <?php if ($tasks != 0) { ?>
 
@@ -81,7 +79,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
             <tr>
 
-                <!-- NUMBER -->
+            
 
                 <td>
 
@@ -89,7 +87,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
                 </td>
 
-                <!-- TITLE -->
+          
 
                 <td>
 
@@ -97,7 +95,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
                 </td>
 
-                <!-- DESCRIPTION -->
+       
 
                 <td>
 
@@ -105,7 +103,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
                 </td>
 
-                <!-- PRIORITY -->
+     
 
                 <td>
 
@@ -130,7 +128,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
                 </td>
 
-                <!-- STATUS -->
+          
 
                 <td>
 
@@ -155,7 +153,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
                 </td>
 
-                <!-- DUE DATE -->
+      
 
                 <td>
 
@@ -187,7 +185,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
     <?php } else { ?>
 
-    <!-- EMPTY STATE -->
+   
 
     <div class="empty-state">
 

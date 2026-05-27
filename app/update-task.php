@@ -9,7 +9,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
         isset($_POST['description']) &&
         isset($_POST['assigned_to']) &&
         isset($_POST['due_date']) &&
-        isset($_POST['priority']) && // ✅ ADDED SAFETY CHECK
+        isset($_POST['priority']) && 
         $_SESSION['role'] == "admin"
     ) {
 
@@ -49,9 +49,8 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
         } else {
 
             include "Model/Task.php";
-            include "Model/Notification.php"; // ✅ ADDED
+            include "Model/Notification.php"; 
 
-            // UPDATE TASK
             $data = array(
                 $title,
                 $description,
@@ -63,7 +62,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
             update_task($conn, $data);
 
-            // 🔥 NOTIFICATION ADDED
+
             $notif_data = array(
                 "Task '$title' was updated. Priority was updated to: $priority",
                 $assigned_to,

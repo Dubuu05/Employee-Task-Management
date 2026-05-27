@@ -40,7 +40,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
 <div class="create-task-container">
 
-    <!-- HEADER -->
     <div class="create-task-header">
 
         <div>
@@ -61,7 +60,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
     </div>
 
-    <!-- CARD -->
     <div class="task-card">
 
         <form class="modern-form" method="POST" action="app/update-task.php">
@@ -80,7 +78,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             <div class="form-grid">
 
-                <!-- TITLE -->
                 <div class="form-group">
                     <label>
                         <i class="fa fa-header"></i>
@@ -108,7 +105,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             </div>
 
-            <!-- DESCRIPTION -->
             <div class="form-group">
 
                 <label>
@@ -124,7 +120,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             <div class="form-grid">
 
-                <!-- PRIORITY -->
                 <div class="form-group">
 
                     <label>
@@ -150,7 +145,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
                 </div>
 
-                <!-- ASSIGNED TO -->
                 <div class="form-group">
 
                     <label>
@@ -179,10 +173,8 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             </div>
 
-            <!-- HIDDEN ID -->
             <input type="hidden" name="id" value="<?= $task['id'] ?>">
 
-            <!-- BUTTON -->
             <button class="create-task-btn" type="submit">
 
                 <i class="fa fa-save"></i>

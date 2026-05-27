@@ -1,24 +1,18 @@
 <?php
 session_start();
 
-// =========================
-// AUTH CHECK
-// =========================
+
 if (!isset($_SESSION['role']) || !isset($_SESSION['id'])) {
     header("Location: login.php?error=First login");
     exit();
 }
 
-// =========================
-// INCLUDE FILES
-// =========================
+
 include_once "DB_connection.php";
 include_once "app/Model/Task.php";
 include_once "app/Model/User.php";
 
-// =========================
-// SAFE DEFAULT VALUES
-// =========================
+
 $num_my_task = 0;
 $overdue_task = 0;
 $no_deadline_task = 0;
@@ -30,10 +24,7 @@ $num_task = 0;
 $num_users = 0;
 $todaydue_task = 0;
 
-// =========================
-// SAFE FUNCTION CALL WRAPPER
-// (prevents fatal error if function missing)
-// =========================
+
 function safe_call($fn, $conn, $id = null) {
     if (function_exists($fn)) {
         return ($id !== null) ? $fn($conn, $id) : $fn($conn);
@@ -41,9 +32,7 @@ function safe_call($fn, $conn, $id = null) {
     return 0;
 }
 
-// =========================
-// ADMIN / USER LOGIC
-// =========================
+
 if ($_SESSION['role'] === "admin") {
 
     $todaydue_task   = safe_call("count_tasks_due_today", $conn);

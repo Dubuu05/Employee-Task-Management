@@ -43,18 +43,13 @@ if (
         exit();
     }
 
-    // =========================
-    // 🔴 DUPLICATE CHECK (FIXED)
-    // =========================
     if (account_exists($conn, $user_name)) {
         header("Location: ../add-user.php?error=Username already exists!");
         exit();
     }
 
-    // hash password
     $password = password_hash($password, PASSWORD_DEFAULT);
 
-    // FIXED DATA ORDER
     $data = [
         $full_name,
         $user_name,

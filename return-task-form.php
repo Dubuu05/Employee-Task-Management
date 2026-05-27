@@ -76,7 +76,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                 </div>
             <?php } ?>
 
-            <!-- TASK TITLE -->
+        
             <div class="form-group">
                 <label>
                     <i class="fa fa-tasks"></i>
@@ -89,7 +89,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                        readonly>
             </div>
 
-            <!-- FILE -->
+     
             <div class="form-group">
                 <label>
                     <i class="fa fa-file"></i>
@@ -115,7 +115,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                 <?php } ?>
             </div>
 
-            <!-- COMMENT -->
+         
             <div class="form-group">
                 <label>
                     <i class="fa fa-comment"></i>
@@ -134,7 +134,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                    name="id"
                    value="<?= $task['id'] ?>">
 
-            <!-- BUTTONS -->
+        
             <div style="display:flex; gap:12px; margin-top:20px;">
 
                 <button type="submit" class="create-task-btn">

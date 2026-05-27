@@ -28,11 +28,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
             exit();
         }
 
-        /*
-        -----------------------------
-        NAME ONLY UPDATE
-        -----------------------------
-        */
         if (
             empty($password) &&
             empty($new_password) &&
@@ -47,12 +42,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
             header("Location: ../edit_profile.php?success=$em");
             exit();
         }
-
-        /*
-        -----------------------------
-        PASSWORD UPDATE
-        -----------------------------
-        */
 
         if (
             empty($password) ||

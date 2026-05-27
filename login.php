@@ -14,7 +14,7 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
+
 <nav class="navbar-tech">
 
     <div class="logo-container">
@@ -31,7 +31,7 @@
 
 </nav>
 
-<!-- HERO SECTION -->
+
 <section class="hero">
     <div class="hero-overlay">
     </div>
@@ -43,7 +43,7 @@
             with TechNova's smart management platform.
         </p>
 
-        <!-- LOGIN FORM -->
+
         <form method="POST" action="app/login.php" class="shadow p-4 login-form">
 
             <h3 class="display-6 mb-3">Login</h3>

@@ -35,22 +35,16 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
         $due_date = validate_input($_POST['due_date']);
         $priority = validate_input($_POST['priority']);
 
-        // BASIC VALIDATION
         if (empty($title) || empty($description) || $assigned_to == 0) {
             header("Location: ../create_task.php?error=Please complete all fields!");
             exit();
         }
 
-        // COUNT TASKS
         $highCount = count_priority($conn, $assigned_to, "High");
         $mediumCount = count_priority($conn, $assigned_to, "Medium");
         $lowCount = count_priority($conn, $assigned_to, "Low");
 
-        // =========================
-        // 🔥 RULE SET (STRICT STATE SYSTEM)
-        // =========================
-
-        // 🟢 5 LOW = BLOCK EVERYTHING EXCEPT LOW
+ 
         if ($lowCount >= 5) {
 
             if ($priority == "High" || $priority == "Medium") {
@@ -59,7 +53,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
             }
         }
 
-        // 🔴 2 HIGH RULE STATE
         if ($highCount >= 2) {
 
             if ($priority == "High") {
@@ -78,7 +71,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
             }
         }
 
-        // 🟠 2 MEDIUM RULE STATE
         if ($mediumCount >= 2) {
 
             if ($priority == "High" || $priority == "Medium") {
@@ -91,10 +83,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
                 exit();
             }
         }
-
-        // =========================
-        // DEADLINE RULES
-        // =========================
 
         $today = strtotime(date('Y-m-d'));
         $due = strtotime($due_date);
@@ -115,9 +103,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
             }
         }
 
-        // =========================
-        // INSERT TASK
-        // =========================
 
         include "Model/Task.php";
         include "Model/Notification.php";

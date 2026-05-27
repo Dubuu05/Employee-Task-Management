@@ -33,16 +33,12 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
             exit();
         }
 
-        // =========================
-        // IF PASSWORD IS NOT EMPTY
-        // =========================
         if (!empty($password)) {
 
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         } else {
 
-            // keep old password
             $hashed_password = null;
         }
 

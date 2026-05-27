@@ -1,8 +1,5 @@
 <?php
 
-// =======================
-// INSERT TASK
-// =======================
 function insert_task($conn, $data) {
     $sql = "INSERT INTO tasks
             (title, description, assigned_to, due_date, priority, status, created_at)
@@ -12,10 +9,6 @@ function insert_task($conn, $data) {
     return $stmt->execute($data);
 }
 
-
-// =======================
-// UPDATE TASK DETAILS
-// =======================
 function update_task($conn, $data) {
     $sql = "UPDATE tasks 
             SET title = ?, 
@@ -29,10 +22,6 @@ function update_task($conn, $data) {
     return $stmt->execute($data);
 }
 
-
-// =======================
-// UPDATE STATUS ONLY
-// =======================
 function update_task_status($conn, $data) {
     $sql = "UPDATE tasks SET status = ? WHERE id = ?";
 
@@ -41,9 +30,6 @@ function update_task_status($conn, $data) {
 }
 
 
-// =======================
-// UPDATE STATUS + FILE
-// =======================
 function update_task_status_and_file($conn, $id, $status, $file_path) {
     $sql = "UPDATE tasks 
             SET status = ?, 
@@ -54,10 +40,6 @@ function update_task_status_and_file($conn, $id, $status, $file_path) {
     return $stmt->execute([$status, $file_path, $id]);
 }
 
-
-// =======================
-// GET ALL TASKS
-// =======================
 function get_all_tasks($conn) {
     $sql = "SELECT * FROM tasks ORDER BY id DESC";
 
@@ -67,9 +49,6 @@ function get_all_tasks($conn) {
 }
 
 
-// =======================
-// GET TASK BY ID
-// =======================
 function get_task_by_id($conn, $id) {
     $sql = "SELECT * FROM tasks WHERE id = ?";
 
@@ -78,10 +57,6 @@ function get_task_by_id($conn, $id) {
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-
-// =======================
-// DELETE TASK
-// =======================
 function delete_task($conn, $data) {
     $sql = "DELETE FROM tasks WHERE id = ?";
 
@@ -89,10 +64,6 @@ function delete_task($conn, $data) {
     return $stmt->execute($data);
 }
 
-
-// =======================
-// COUNTS (ADMIN)
-// =======================
 function count_tasks_due_today($conn) {
     $sql = "SELECT COUNT(*) FROM tasks
             WHERE due_date IS NOT NULL
@@ -130,10 +101,6 @@ function count_tasks($conn) {
     return $stmt->fetchColumn();
 }
 
-
-// =======================
-// USER TASK COUNTS (ALL TASKS)
-// =======================
 function count_my_tasks($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE assigned_to = ?";
 
@@ -165,9 +132,6 @@ function count_my_tasks_no_deadline($conn, $id) {
 }
 
 
-// =======================
-// USER STATUS COUNTS (FIXED)
-// =======================
 function count_my_pending_tasks($conn, $id) {
     $sql = "SELECT COUNT(*) FROM tasks 
             WHERE assigned_to = ? AND status = 'pending'";
@@ -196,9 +160,6 @@ function count_my_completed_tasks($conn, $id) {
 }
 
 
-// =======================
-// STATUS COUNTS (ADMIN)
-// =======================
 function count_pending_tasks($conn) {
     $sql = "SELECT COUNT(*) FROM tasks WHERE status = 'pending'";
 
@@ -223,10 +184,6 @@ function count_completed_tasks($conn) {
     return $stmt->fetchColumn();
 }
 
-
-// =======================
-// FILTERED LISTS
-// =======================
 function get_all_tasks_due_today($conn) {
     $sql = "SELECT * FROM tasks
             WHERE due_date IS NOT NULL

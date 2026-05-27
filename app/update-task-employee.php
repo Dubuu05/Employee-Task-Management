@@ -32,7 +32,6 @@ if (!empty($_SESSION['role']) && !empty($_SESSION['id'])) {
             exit();
         }
 
-        // FILE UPLOAD
         $file_path = null;
 
         if (isset($_FILES['task_file']) && $_FILES['task_file']['error'] === 0) {
@@ -54,16 +53,13 @@ if (!empty($_SESSION['role']) && !empty($_SESSION['id'])) {
             }
         }
 
-        // UPDATE TASK
+
         if ($file_path) {
             update_task_status_and_file($conn, $id, $status, $file_path);
         } else {
             update_task_status($conn, [$status, $id]);
         }
 
-        // ===============================
-        // NOTIFICATION SYSTEM (FIXED)
-        // ===============================
 
         $check_status = strtolower(trim($status));
 
@@ -73,18 +69,15 @@ if (!empty($_SESSION['role']) && !empty($_SESSION['id'])) {
 
             try {
 
-                // GET ADMINS
                 $admin_sql = "SELECT id FROM users WHERE LOWER(role) = 'admin'";
                 $admin_stmt = $conn->prepare($admin_sql);
                 $admin_stmt->execute();
                 $admins = $admin_stmt->fetchAll();
 
-                // EMPLOYEE NAME (FIXED)
                 $emp_name = $_SESSION['full_name'] 
                     ?? $_SESSION['username'] 
                     ?? "Employee";
 
-                // GET TASK NAME (NEW FIX)
                 $task_sql = "SELECT title FROM tasks WHERE id = ?";
                 $task_stmt = $conn->prepare($task_sql);
                 $task_stmt->execute([$id]);
@@ -92,14 +85,11 @@ if (!empty($_SESSION['role']) && !empty($_SESSION['id'])) {
 
                 $task_title = $task['title'] ?? "Unknown Task";
 
-                // FORMAT STATUS
                 $display_status = ucwords(str_replace('_', ' ', $check_status));
 
-                // FINAL MESSAGE
                 $message = "$emp_name Updated the Task '$task_title' to: $display_status";
                 $type = "Task Update";
 
-                // INSERT NOTIFICATION
                 foreach ($admins as $admin) {
                     $data = [$message, $admin['id'], $type];
                     insert_notification($conn, $data);
@@ -110,7 +100,6 @@ if (!empty($_SESSION['role']) && !empty($_SESSION['id'])) {
             }
         }
 
-        // SUCCESS
         $sm = "Task updated successfully!";
         header("Location: ../edit-task-employee.php?success=" . urlencode($sm) . "&id=" . $id);
         exit();

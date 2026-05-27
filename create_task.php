@@ -24,7 +24,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
     <div class="create-task-container">
 
-        <!-- HEADER -->
         <div class="create-task-header">
 
             <div>
@@ -38,7 +37,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
         </div>
 
-        <!-- FORM CARD -->
         <div class="task-card">
 
             <form class="modern-form" method="POST" action="app/add-task.php">
@@ -55,7 +53,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     </div>
                 <?php } ?>
 
-                <!-- TITLE -->
                 <div class="form-group">
                     <label>
                         <i class="fa fa-pencil"></i>
@@ -71,7 +68,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     >
                 </div>
 
-                <!-- DESCRIPTION -->
                 <div class="form-group">
                     <label>
                         <i class="fa fa-align-left"></i>
@@ -86,10 +82,8 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     ></textarea>
                 </div>
 
-                <!-- GRID -->
                 <div class="form-grid">
 
-                    <!-- DUE DATE -->
                     <div class="form-group">
                         <label>
                             <i class="fa fa-calendar"></i>
@@ -104,7 +98,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                         >
                     </div>
 
-                    <!-- PRIORITY -->
                     <div class="form-group">
                         <label>
                             <i class="fa fa-flag"></i>
@@ -120,7 +113,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
                 </div>
 
-                <!-- ASSIGNED TO -->
                 <div class="form-group">
                     <label>
                         <i class="fa fa-user"></i>
@@ -147,7 +139,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     </select>
                 </div>
 
-                <!-- BUTTON -->
                 <button class="create-task-btn">
 
                     <i class="fa fa-plus-circle"></i>

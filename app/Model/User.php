@@ -7,10 +7,6 @@ function get_all_users($conn) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-
-/* =========================
-   INSERT USER
-========================= */
 function insert_user($conn, $data) {
     $sql = "INSERT INTO users (full_name, username, password, role)
             VALUES (?, ?, ?, ?)";
@@ -19,14 +15,8 @@ function insert_user($conn, $data) {
     return $stmt->execute($data);
 }
 
-
-/* =========================
-   UPDATE USER (WITH OPTIONAL PASSWORD)
-   ✔ FIXED VERSION (NO NEED SEPARATE FUNCTION)
-========================= */
 function update_user($conn, $data) {
 
-    // password is optional using COALESCE
     $sql = "UPDATE users
             SET full_name = ?,
                 username = ?,
@@ -38,16 +28,12 @@ function update_user($conn, $data) {
     return $stmt->execute($data);
 }
 
-
-/* DELETE USER */
 function delete_user($conn, $data) {
     $sql = "DELETE FROM users WHERE id = ? AND role = ?";
     $stmt = $conn->prepare($sql);
     return $stmt->execute($data);
 }
 
-
-/* GET USER */
 function get_user_by_id($conn, $id) {
     $sql = "SELECT * FROM users WHERE id = ?";
     $stmt = $conn->prepare($sql);
@@ -56,16 +42,12 @@ function get_user_by_id($conn, $id) {
     return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
 }
 
-
-/* UPDATE PROFILE */
 function update_profile($conn, $data) {
     $sql = "UPDATE users SET full_name = ?, password = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
     return $stmt->execute($data);
 }
 
-
-/* COUNT USERS */
 function count_users($conn) {
     $sql = "SELECT COUNT(*) FROM users WHERE role = ?";
     $stmt = $conn->prepare($sql);
@@ -74,7 +56,6 @@ function count_users($conn) {
 }
 
 
-/* CHECK DUPLICATE USERNAME */
 function account_exists($conn, $username) {
     $sql = "SELECT COUNT(*) FROM users WHERE username = ?";
     $stmt = $conn->prepare($sql);

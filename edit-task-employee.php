@@ -41,7 +41,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
            <div class="edit-task-container">
 
-    <!-- HEADER -->
 
     <div class="edit-task-header">
 
@@ -57,7 +56,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
     </div>
 
-    <!-- CARD -->
 
     <div class="edit-task-card">
 
@@ -78,7 +76,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                 </div>
             <?php } ?>
 
-            <!-- TASK INFO -->
 
             <div class="task-preview-box">
 
@@ -98,14 +95,12 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             </div>
 
-            <!-- FILE FLAG -->
 
             <input type="hidden"
                    name="remove_file_flag"
                    id="remove_file_flag"
                    value="0">
 
-            <!-- FILE AREA -->
 
             <div class="upload-card">
 
@@ -136,14 +131,12 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
                 <?php } ?>
 
-                <!-- HIDDEN INPUT -->
 
                 <input type="file"
                        name="task_file"
                        id="task_file"
                        style="display:none;">
 
-                <!-- BUTTONS -->
 
                 <div class="upload-actions">
 
@@ -173,7 +166,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             </div>
 
-            <!-- STATUS -->
+    
 
             <div class="status-card">
 
@@ -216,13 +209,12 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             </div>
 
-            <!-- TASK ID -->
 
             <input type="hidden"
                    name="id"
                    value="<?= $task['id'] ?>">
 
-            <!-- SUBMIT -->
+
 
             <button class="update-task-btn" type="submit">
 
@@ -241,7 +233,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     </div>
 
     <script>
-        // STATUS BUTTON LOGIC
         const buttons = document.querySelectorAll(".status-buttons button");
         const statusInput = document.getElementById("statusInput");
 
@@ -256,7 +247,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
             });
         });
 
-        // FILE INPUT DISPLAY
         document.getElementById('task_file').addEventListener('change', function() {
             document.getElementById('file-name').textContent =
                 this.files[0] ? this.files[0].name : "No file chosen";
@@ -264,7 +254,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
             document.getElementById('remove_file_flag').value = "0";
         });
 
-        // REMOVE FILE
         document.getElementById('remove-file').addEventListener('click', function() {
 
             document.getElementById('task_file').value = "";
